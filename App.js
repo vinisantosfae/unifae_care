@@ -1,20 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import {NavigationContainer} from "@react-navigation/native";
+import { useFonts } from "expo-font";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    const [fontsLoaded] = useFonts({
+        "Fredoka-Bold": require("./src/assets/fonts/Fredoka/Fredoka-Bold.ttf"),
+        "Fredoka-Light": require("./src/assets/fonts/Fredoka/Fredoka-Light.ttf"),
+        "Fredoka-Regular": require("./src/assets/fonts/Fredoka/Fredoka-Regular.ttf"),
+        "Fredoka-Medium": require("./src/assets/fonts/Fredoka/Fredoka-Medium.ttf"),
+        "Fredoka-SemiBold": require("./src/assets/fonts/Fredoka/Fredoka-SemiBold.ttf"),
+    });
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    return (
+        <AuthProvider>
+            <NavigationContainer>
+                <StatusBar style="dark" />
+                <RootNavigation />
+            </NavigationContainer>
+        </AuthProvider>
+    );
+}
