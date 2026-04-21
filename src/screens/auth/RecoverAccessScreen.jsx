@@ -20,18 +20,24 @@ import {
   TouchableOpacity,
   Modal
 } from "react-native";
-import styles from "../../styles/recoverPasswordScreen.style";
+import styles from "../../styles/recoverAccessScreen.style";
 
-export function RecoverPasswordScreen() {
+export function RecoverAccessScreen() {
     const navigation = useNavigation();
 
     const [email, setEmail] = useState("");
+    const [verificationCode, setVerificationCode] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
-    const recoverAccess = () => {
-      navigation.navigate("RecoverAccess")
+    const login = () => {
+      navigation.navigate("Login")
     }
 
     return (
@@ -57,8 +63,10 @@ export function RecoverPasswordScreen() {
                   </View>
                 </View>
                 <View style={styles.body}>
-                  <Text style={{fontSize: 18, fontFamily: FONTS.main_semiBold, textTransform: "uppercase"}}>Recuperar Senha</Text>
-                  <Text style={{fontFamily: FONTS.main_regular, fontSize: 15, textAlign: "center", width: "90%"}}>Insira seu email para receber um código de 8 dígitos para redefinir sua conta</Text>
+                  <Text style={{fontSize: 18, fontFamily: FONTS.main_semiBold, textTransform: "uppercase", width: "100%", textAlign: "center"}}>Recuperação de Acesso</Text>
+                  <Text style={{fontFamily: FONTS.main_regular, fontSize: 15, textAlign: "center", width: "90%"}}>Redefina sua senha para continuar acessando seus dados clínicos e acadêmicos com total segurança</Text>
+                  <Text style={{fontFamily: FONTS.main_semiBold, color: COLORS.primary, marginTop: 25}}>Dica de Segurança</Text>
+                  <Text style={{fontFamily: FONTS.main_regular, fontSize: 13, color: COLORS.text.primary, textAlign: "center", width: "60%", marginTop: 3}}>Use ao menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e um símbolo especial</Text>
                   <View style={styles.form}>
                       <Text style={styles.label}>Email</Text>
                       <View style={styles.viewInput}>
@@ -71,12 +79,58 @@ export function RecoverPasswordScreen() {
                             placeholder="nome@exemplo.com.br"
                         />
                       </View>
-                      <TouchableOpacity style={styles.formButton} onPress={() => recoverAccess()}>
-                        <Text style={{color: "white", fontSize: 16, textAlign: "center", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Enviar código</Text>
+                      <View style={[styles.label, {flexDirection: "row", justifyContent: "space-between", textAlign: "center"}]}>
+                        <Text>Código de Verificação</Text>
+                        <Text style={{color: COLORS.text.status.error}}>8 dígitos</Text>
+                      </View>
+                      <View style={styles.viewInput}>
+                        <Image source={ICONS.numbers} style={styles.iconInput}/>
+                        <TextInput
+                            style={styles.input}
+                            value={verificationCode}
+                            onChangeText={verificationCode => setVerificationCode(verificationCode)}
+                            placeholderTextColor={COLORS.text.primary}
+                            placeholder="0000-0000"
+                        />
+                      </View>
+                      <Text style={styles.label}>Nova Senha</Text>
+                      <View style={styles.viewInput}>
+                        <View style={{flexDirection: "row", gap: 5, flex: 1}}>
+                            <Image source={ICONS.padlock} style={styles.iconInput}/>
+                            <TextInput
+                            style={styles.input}
+                            value={password}
+                            onChangeText={setPassword}
+                            placeholderTextColor={COLORS.primary}
+                            placeholder="********"
+                            secureTextEntry={!showPassword}
+                            />
+                        </View>
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                            <Text style={{fontSize: 12, fontFamily: FONTS.main_light}}>{showPassword ? "Ocultar" : "Mostrar"}</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Text style={styles.label}>Confirmar Senha</Text>
+                      <View style={styles.viewInput}>
+                        <View style={{flexDirection: "row", gap: 5, flex: 1}}>
+                          <Image source={ICONS.shield_lock} style={styles.iconInput}/>
+                          <TextInput
+                              style={styles.input}
+                              value={confirmPassword}
+                              onChangeText={confirmPassword => setConfirmPassword(confirmPassword)}
+                              placeholderTextColor={COLORS.text.primary}
+                              placeholder="********"
+                              secureTextEntry={!showConfirmPassword}
+                          />
+                        </View>
+                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                            <Text style={{fontSize: 12, fontFamily: FONTS.main_light}}>{showConfirmPassword ? "Ocultar" : "Mostrar"}</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <TouchableOpacity style={styles.formButton} onPress={() => login()}>
+                        <Text style={{color: "white", fontSize: 16, textAlign: "center", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Atualizar</Text>
                       </TouchableOpacity>
                   </View>
-                  <Text style={{fontFamily: FONTS.main_semiBold, color: COLORS.primary, marginTop: 25}}>Informação Importante</Text>
-                  <Text style={{fontFamily: FONTS.main_regular, fontSize: 13, color: COLORS.text.primary, textAlign: "center", width: "60%", marginTop: 3}}>Por motivos de segurança, o código de recuperação expira em 15 minutos. Verifique sua caixa de spam caso não receba  o email em instantes</Text>
                 </View>
                 <View>
                   <ImageBackground source={require('../../assets/images/footer.png')} style={{width: "100%", aspectRatio: 1.56, justifyContent: "flex-end"}} resizeMode="contain">
