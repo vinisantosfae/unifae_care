@@ -4,6 +4,7 @@ import {useAuthContext} from "../../contexts/AuthContext";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
+import { useRegisterViewModel } from "../../viewmodels/useRegisterViewModel";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RadioButton } from 'react-native-paper';
 import {
@@ -24,17 +25,51 @@ import styles from "../../styles/registerScreen.style";
 
 export function RegisterScreen() {
     const navigation = useNavigation();
+    const { setUser } = useAuthContext();
 
-    const [userType, setUserType] = useState("patient");
-    const [name, setName] = useState("");
-    const [ra, setRa] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const {
+        userType,
+        setUserType,
+        name,
+        setName,
+        ra,
+        setRa,
+        email,
+        setEmail,
+        password,
+        setPassword,
+        loading,
+        canSubmit,
+        register,
+        resetFeedback,
+    } = useRegisterViewModel({
+        onSuccess: async (user) => {
+            await setUser(user);
+        },
+    });
 
     const [showPassword, setShowPassword] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
+
+    async function handleRegister() {
+        const result = await register();
+
+        if (!result.user) {
+            setModalMessage(result.errorMessage ?? "Nao foi possivel concluir o cadastro.");
+            setModalVisible(true);
+            return;
+        }
+
+        setModalMessage(result.successMessage ?? "Cadastro realizado com sucesso.");
+        setModalVisible(true);
+    }
+
+    function handleCloseModal() {
+        setModalVisible(false);
+        resetFeedback();
+    }
 
     return (
         <SafeAreaView edges={['top']} style={{ flex: 1 }}>
@@ -48,7 +83,7 @@ export function RegisterScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 <View style={styles.header}>
-                <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}}>
+                <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.goBack()}>
                     <Image source={ICONS.back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
                     <Text style={{color: "#349064", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                 </TouchableOpacity>
@@ -160,6 +195,8 @@ export function RegisterScreen() {
                         onChangeText={email => setEmail(email.toLowerCase())}
                         placeholderTextColor="#349064"
                         placeholder="nome@exemplo.com.br"
+                        autoCapitalize="none"
+                        keyboardType="email-address"
                     />
                     </View>
                     <Text style={styles.label}>Senha</Text>
@@ -179,8 +216,8 @@ export function RegisterScreen() {
                         <Text style={{fontSize: 12, fontFamily: FONTS.main_light}}>{showPassword ? "Ocultar" : "Mostrar"}</Text>
                     </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.formButton} onPress={() => handleRegister()}>
-                    <Text style={{color: "white", fontSize: 16, textAlign: "center", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Cadastrar</Text>
+                    <TouchableOpacity style={[styles.formButton, (!canSubmit || loading) && { opacity: 0.7 }]} onPress={() => handleRegister()} disabled={!canSubmit || loading}>
+                    <Text style={{color: "white", fontSize: 16, textAlign: "center", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>{loading ? "Cadastrando..." : "Cadastrar"}</Text>
                     </TouchableOpacity>
                 </View>
                 </View>
@@ -198,7 +235,7 @@ export function RegisterScreen() {
                 <View style={styles.backgroundModal}>
                     <View style={styles.modal}>
                     <Text style={styles.modalMessage}>{modalMessage}</Text>
-                    <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+                    <TouchableOpacity onPress={handleCloseModal} style={styles.modalButton}>
                         <Text style={{color: "#349064", fontWeight: "bold", textTransform: "uppercase"}}>Ok</Text>
                     </TouchableOpacity>
                     </View>

@@ -3,7 +3,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LOGGED_USER_KEY = "@CHECKEI_loggedd_user";
 
-const AuthContext = createContext({});
+const AuthContext = createContext({
+    user: null,
+    setUser: async () => {},
+    loading: true,
+});
 
 export function AuthProvider({ children }) {
     const [user, setUserState] = useState(null);

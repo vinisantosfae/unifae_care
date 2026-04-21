@@ -26,7 +26,8 @@
       "favicon": "./src/assets/images/app_logo.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "expo-sqlite"
     ]
   }
 }
