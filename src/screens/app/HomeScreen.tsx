@@ -41,7 +41,7 @@ export function HomeScreen() {
           textAlign: 'center',
         }}
       >
-        Usuario logado: {user?.nome}
+        Usuário logado: {user?.nome}
       </Text>
       <Text
         style={{
@@ -51,7 +51,7 @@ export function HomeScreen() {
           textAlign: 'center',
         }}
       >
-        Esta e uma tela temporaria para validar o fluxo apos o cadastro.
+        Esta é uma tela temporária para validar o fluxo após o cadastro.
       </Text>
       <TouchableOpacity
         onPress={handleLogout}
