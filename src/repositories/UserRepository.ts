@@ -33,7 +33,7 @@ export class UserRepository {
     }
 
     if (!EMAIL_REGEX.test(email)) {
-      throw new Error('Informe um email valido para continuar.');
+      throw new Error('Informe um email válido para continuar.');
     }
 
     if (tipoUsuario !== 'patient' && !ra) {
@@ -60,20 +60,20 @@ export class UserRepository {
         ra,
       };
 
-      console.log('Usuario cadastrado com sucesso:', createdUser);
+      console.log('Usuário cadastrado com sucesso:', createdUser);
       return createdUser;
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
 
       if (message.toLowerCase().includes('usuarios.ra') || message.toLowerCase().includes('idx_usuarios_ra_unique')) {
-        throw new Error('Este RA ja esta cadastrado.');
+        throw new Error('Este RA já esta cadastrado.');
       }
 
       if (message.toLowerCase().includes('unique') || message.toLowerCase().includes('usuarios.email')) {
-        throw new Error('Este email ja esta cadastrado.');
+        throw new Error('Este email já esta cadastrado.');
       }
 
-      throw new Error('Nao foi possivel concluir o cadastro no momento.');
+      throw new Error('Não foi possivel concluir o cadastro no momento.');
     }
   }
 
@@ -125,7 +125,7 @@ export class UserRepository {
     }
 
     if (!EMAIL_REGEX.test(normalizedEmail)) {
-      throw new Error('Informe um email valido para continuar.');
+      throw new Error('Informe um email válido para continuar.');
     }
 
     const user = await this.findUserByEmail(normalizedEmail);
