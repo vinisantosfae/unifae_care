@@ -13,7 +13,6 @@ export default function AppDrawer() {
                     drawerPosition: "right",
                     headerShown: false,
                 }}
-                children={}
             >
 
             </Drawer.Navigator>
