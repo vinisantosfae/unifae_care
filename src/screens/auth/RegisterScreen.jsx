@@ -38,6 +38,8 @@ export function RegisterScreen() {
         setEmail,
         password,
         setPassword,
+        confirmPassword,
+        setConfirmPassword,
         loading,
         canSubmit,
         register,
@@ -57,7 +59,7 @@ export function RegisterScreen() {
         const result = await register();
 
         if (!result.user) {
-            setModalMessage(result.errorMessage ?? "Nao foi possivel concluir o cadastro.");
+            setModalMessage(result.errorMessage ?? "Não foi possivel concluir o cadastro.");
             setModalVisible(true);
             return;
         }
@@ -207,6 +209,23 @@ export function RegisterScreen() {
                         style={styles.input}
                         value={password}
                         onChangeText={setPassword}
+                        placeholderTextColor={COLORS.text.primary}
+                        placeholder="********"
+                        secureTextEntry={!showPassword}
+                        />
+                    </View>
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                        <Text style={{fontSize: 12, fontFamily: FONTS.main_light}}>{showPassword ? "Ocultar" : "Mostrar"}</Text>
+                    </TouchableOpacity>
+                    </View>
+                    <Text style={styles.label}>Confirmar senha</Text>
+                    <View style={styles.viewInput}>
+                    <View style={{flexDirection: "row", gap: 5, flex: 1}}>
+                        <Image source={ICONS.padlock} style={styles.iconInput}/>
+                        <TextInput
+                        style={styles.input}
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
                         placeholderTextColor={COLORS.text.primary}
                         placeholder="********"
                         secureTextEntry={!showPassword}

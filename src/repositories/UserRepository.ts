@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { hashSync, setRandomFallback } from 'bcryptjs';
+import { compareSync, hashSync, setRandomFallback } from 'bcryptjs';
 import { initDatabase, getDatabase } from '../database/sqlite';
 import { AuthUser, CreateUserInput, User } from '../models/User';
 
@@ -7,6 +7,16 @@ const SALT_ROUNDS = 10;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 setRandomFallback((length) => Array.from(Crypto.getRandomBytes(length)));
+
+function toAuthUser(user: Pick<User, 'id' | 'nome' | 'email' | 'tipoUsuario' | 'ra'>): AuthUser {
+  return {
+    id: user.id,
+    nome: user.nome,
+    email: user.email,
+    tipoUsuario: user.tipoUsuario,
+    ra: user.ra,
+  };
+}
 
 export class UserRepository {
   async createUser(input: CreateUserInput): Promise<AuthUser> {
@@ -102,6 +112,35 @@ export class UserRepository {
       ra: row.ra,
       createdAt: row.created_at,
     };
+  }
+
+  async login(email: string, senha: string): Promise<AuthUser> {
+    await initDatabase();
+
+    const normalizedEmail = String(email ?? '').trim().toLowerCase();
+    const normalizedPassword = String(senha ?? '').trim();
+
+    if (!normalizedEmail || !normalizedPassword) {
+      throw new Error('Preencha email e senha para continuar.');
+    }
+
+    if (!EMAIL_REGEX.test(normalizedEmail)) {
+      throw new Error('Informe um email valido para continuar.');
+    }
+
+    const user = await this.findUserByEmail(normalizedEmail);
+
+    if (!user) {
+      throw new Error('Email ou senha incorretos.');
+    }
+
+    const isPasswordValid = compareSync(normalizedPassword, user.senhaHash);
+
+    if (!isPasswordValid) {
+      throw new Error('Email ou senha incorretos.');
+    }
+
+    return toAuthUser(user);
   }
 }
 

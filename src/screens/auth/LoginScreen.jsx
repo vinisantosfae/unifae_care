@@ -4,6 +4,7 @@ import {useAuthContext} from "../../contexts/AuthContext";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
+import { useLoginViewModel } from "../../viewmodels/useLoginViewModel";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RadioButton } from 'react-native-paper';
 import {
@@ -24,10 +25,23 @@ import styles from "../../styles/loginScreen.style";
 
 export function LoginScreen() {
     const navigation = useNavigation();
+    const { setUser } = useAuthContext();
 
     const [userType, setUserType] = useState("patient");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const {
+      email,
+      setEmail,
+      password,
+      setPassword,
+      loading,
+      canSubmit,
+      login,
+      resetFeedback,
+    } = useLoginViewModel({
+      onSuccess: async (user) => {
+        await setUser(user);
+      }
+    });
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -39,6 +53,24 @@ export function LoginScreen() {
     }
     const register = () => {
       navigation.navigate("Register")
+    }
+
+    async function handleLogin() {
+      const result = await login();
+
+      if (!result.user) {
+        setModalMessage(result.errorMessage ?? "Não foi possivel realizar o login.");
+        setModalVisible(true);
+        return;
+      }
+
+      setModalMessage(result.successMessage ?? "Login realizado com sucesso.");
+      setModalVisible(true);
+    }
+
+    function handleCloseModal() {
+      setModalVisible(false);
+      resetFeedback();
     }
 
     return (
@@ -72,6 +104,8 @@ export function LoginScreen() {
                             onChangeText={email => setEmail(email.toLowerCase())}
                             placeholderTextColor={COLORS.text.primary}
                             placeholder="nome@exemplo.com.br"
+                            autoCapitalize="none"
+                            keyboardType="email-address"
                         />
                       </View>
                       <Text style={styles.label}>Senha</Text>
@@ -94,8 +128,8 @@ export function LoginScreen() {
                       <TouchableOpacity style={{marginTop: 5}} onPress={() => recoverPassword()}>
                         <Text style={{textTransform: "uppercase", fontFamily: FONTS.main_semiBold, color: COLORS.primary}}>Recuperar senha</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.formButton}>
-                        <Text style={{color: "white", fontSize: 16, textAlign: "center", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Entrar</Text>
+                      <TouchableOpacity style={[styles.formButton, (!canSubmit || loading) && { opacity: 0.7 }]} onPress={() => handleLogin()} disabled={!canSubmit || loading}>
+                        <Text style={{color: "white", fontSize: 16, textAlign: "center", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>{loading ? "Entrando..." : "Entrar"}</Text>
                       </TouchableOpacity>
                   </View>
                   <Text style={{fontFamily: FONTS.main_regular, fontSize: 16, marginTop: 25}}>Não possui uma conta?</Text>
@@ -117,7 +151,7 @@ export function LoginScreen() {
                 <View style={styles.backgroundModal}>
                     <View style={styles.modal}>
                     <Text style={styles.modalMessage}>{modalMessage}</Text>
-                    <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+                    <TouchableOpacity onPress={handleCloseModal} style={styles.modalButton}>
                         <Text style={{color: COLORS.primary, fontWeight: "bold", textTransform: "uppercase"}}>Ok</Text>
                     </TouchableOpacity>
                     </View>

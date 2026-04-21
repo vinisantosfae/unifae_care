@@ -6,6 +6,7 @@ interface RegisterPayload {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
   userType: UserType;
   ra: string;
 }
@@ -26,6 +27,7 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
   const [ra, setRa] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -36,6 +38,7 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
     !!name.trim() &&
     !!email.trim() &&
     !!password.trim() &&
+    !!confirmPassword.trim() &&
     (!requiresRa || !!ra.trim());
 
   async function register(payload?: Partial<RegisterPayload>): Promise<RegisterResult> {
@@ -43,6 +46,7 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
       name: payload?.name ?? name,
       email: payload?.email ?? email,
       password: payload?.password ?? password,
+      confirmPassword: payload?.confirmPassword ?? confirmPassword,
       userType: payload?.userType ?? userType,
       ra: payload?.ra ?? ra,
     };
@@ -50,6 +54,18 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
     setLoading(true);
     setError(null);
     setSuccess(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      const message = 'As senhas não coincidem.';
+      setError(message);
+      setLoading(false);
+
+      return {
+        user: null,
+        errorMessage: message,
+        successMessage: null,
+      };
+    }
 
     try {
       const createdUser = await userRepository.createUser({
@@ -75,7 +91,7 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
       const message =
         registerError instanceof Error
           ? registerError.message
-          : 'Nao foi possivel concluir o cadastro.';
+          : 'Não foi possivel concluir o cadastro.';
 
       setError(message);
       return {
@@ -104,6 +120,8 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
     setEmail,
     password,
     setPassword,
+    confirmPassword,
+    setConfirmPassword,
     loading,
     error,
     success,
