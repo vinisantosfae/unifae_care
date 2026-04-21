@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler';
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
+import { HomeScreen } from "../screens/app/HomeScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -14,7 +15,7 @@ export default function AppDrawer() {
                     headerShown: false,
                 }}
             >
-
+                <Drawer.Screen name="Home" component={HomeScreen} />
             </Drawer.Navigator>
         </GestureHandlerRootView>
     );
