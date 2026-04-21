@@ -8,7 +8,7 @@ export const COLORS  = {
         tertiary: "rgb(215,234,222)",
     },
     input: {
-        background: "rgba(0,107,56,0.3)",
+        background: "#99CFB130",
     },
     text: {
         primary: "#349064",

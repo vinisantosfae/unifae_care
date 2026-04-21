@@ -85,12 +85,12 @@ export function RegisterScreen() {
                 <View style={styles.header}>
                 <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.goBack()}>
                     <Image source={ICONS.back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
-                    <Text style={{color: "#349064", textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
+                    <Text style={{color: COLORS.text.primary, textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                 </TouchableOpacity>
                 <View style={styles.headerLogo}>
                     <Image source={require('../../assets/images/unifae_logo.png')} style={{width: 120, height: 50}}/>
                     <Image source={require('../../assets/images/app_logo.png')} style={{width: 180, height: 180}}/>
-                    <Text style={{fontSize: 22, color: "#349064", textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
+                    <Text style={{fontSize: 22, color: COLORS.text.primary, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
                 </View>
                 </View>
                 <View style={styles.body}>
@@ -109,7 +109,7 @@ export function RegisterScreen() {
                         width: 20,
                         borderRadius: 10,
                         borderWidth: 1,
-                        borderColor: '#349064',
+                        borderColor: COLORS.primary,
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginRight: 10,
@@ -121,12 +121,12 @@ export function RegisterScreen() {
                             height: 10,
                             width: 10,
                             borderRadius: 5,
-                            backgroundColor: '#349064',
+                            backgroundColor: COLORS.primary,
                             }}
                         />
                         )}
                     </View>
-                    <Text style={{color: "#349064", fontFamily: FONTS.main_regular, fontSize: 15}}>Fisioterapeuta</Text>
+                    <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, fontSize: 15}}>Fisioterapeuta</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                     key={"patient"}
@@ -139,7 +139,7 @@ export function RegisterScreen() {
                         width: 20,
                         borderRadius: 10,
                         borderWidth: 1,
-                        borderColor: '#349064',
+                        borderColor: COLORS.primary,
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginRight: 10,
@@ -151,12 +151,12 @@ export function RegisterScreen() {
                             height: 10,
                             width: 10,
                             borderRadius: 5,
-                            backgroundColor: '#349064',
+                            backgroundColor: COLORS.primary,
                             }}
                         />
                         )}
                     </View>
-                    <Text style={{color: "#349064", fontFamily: FONTS.main_regular, fontSize: 15}}>Paciente</Text>
+                    <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, fontSize: 15}}>Paciente</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.form}>
@@ -167,7 +167,7 @@ export function RegisterScreen() {
                         style={styles.input}
                         value={name}
                         onChangeText={setName}
-                        placeholderTextColor="#349064"
+                        placeholderTextColor={COLORS.text.primary}
                         placeholder="Seu nome"
                     />
                     </View>
@@ -180,7 +180,7 @@ export function RegisterScreen() {
                             style={styles.input}
                             value={ra}
                             onChangeText={setRa}
-                            placeholderTextColor="#349064"
+                            placeholderTextColor={COLORS.text.primary}
                             placeholder="00000-0"
                         />
                         </View>
@@ -193,7 +193,7 @@ export function RegisterScreen() {
                         style={styles.input}
                         value={email}
                         onChangeText={email => setEmail(email.toLowerCase())}
-                        placeholderTextColor="#349064"
+                        placeholderTextColor={COLORS.text.primary}
                         placeholder="nome@exemplo.com.br"
                         autoCapitalize="none"
                         keyboardType="email-address"
@@ -207,7 +207,7 @@ export function RegisterScreen() {
                         style={styles.input}
                         value={password}
                         onChangeText={setPassword}
-                        placeholderTextColor="#349064"
+                        placeholderTextColor={COLORS.text.primary}
                         placeholder="********"
                         secureTextEntry={!showPassword}
                         />
@@ -236,7 +236,7 @@ export function RegisterScreen() {
                     <View style={styles.modal}>
                     <Text style={styles.modalMessage}>{modalMessage}</Text>
                     <TouchableOpacity onPress={handleCloseModal} style={styles.modalButton}>
-                        <Text style={{color: "#349064", fontWeight: "bold", textTransform: "uppercase"}}>Ok</Text>
+                        <Text style={{color: COLORS.text.primary, fontWeight: "bold", textTransform: "uppercase"}}>Ok</Text>
                     </TouchableOpacity>
                     </View>
                 </View>

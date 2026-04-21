@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
     alignItems: "center",
-    marginTop: 25
+    marginTop: 10
   },
   label: {
     marginTop: 15,
