@@ -5,5 +5,14 @@ export const ICONS = {
     padlock: require("../assets/icons/padlock_icon.png"),
     shield_lock: require("../assets/icons/shield_lock.png"),
     numbers: require("../assets/icons/numbers_icon.png"),
-    square_numbers: require("../assets/icons/square_numbers_icon.png")
+    square_numbers: require("../assets/icons/square_numbers_icon.png"),
+    alerts: require("../assets/icons/alerts_icon.png"),
+    data_privacy: require("../assets/icons/data_privacy_icon.png"),
+    home: require("../assets/icons/home_icon.png"),
+    notifications: require("../assets/icons/notifications_icon.png"),
+    profile: require("../assets/icons/profile_icon.png"),
+    percentage_progress: require("../assets/icons/percentage_progress_icon.png"),
+    progress: require("../assets/icons/progress_icon.png"),
+    schedule: require("../assets/icons/schedule_icon.png"),
+    user_image: require("../assets/icons/user_image.png")
 }
