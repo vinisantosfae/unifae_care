@@ -51,6 +51,7 @@ export function RegisterScreen() {
     });
 
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
@@ -228,11 +229,11 @@ export function RegisterScreen() {
                         onChangeText={setConfirmPassword}
                         placeholderTextColor={COLORS.text.primary}
                         placeholder="********"
-                        secureTextEntry={!showPassword}
+                        secureTextEntry={!showConfirmPassword}
                         />
                     </View>
-                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                        <Text style={{fontSize: 12, fontFamily: FONTS.main_light}}>{showPassword ? "Ocultar" : "Mostrar"}</Text>
+                    <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                        <Text style={{fontSize: 12, fontFamily: FONTS.main_light}}>{showConfirmPassword ? "Ocultar" : "Mostrar"}</Text>
                     </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={[styles.formButton, (!canSubmit || loading) && { opacity: 0.7 }]} onPress={() => handleRegister()} disabled={!canSubmit || loading}>
