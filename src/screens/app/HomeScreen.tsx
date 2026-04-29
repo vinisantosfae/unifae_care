@@ -1,8 +1,10 @@
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { FONTS } from '../../themes/fonts';
 
 export function HomeScreen() {
+  const navigation = useNavigation();
   const { user, setUser } = useAuthContext() as {
     user: { nome?: string } | null;
     setUser: (userData: null) => Promise<void>;
@@ -53,6 +55,27 @@ export function HomeScreen() {
       >
         Esta é uma tela temporária para validar o fluxo após o cadastro.
       </Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Profile' as never)}
+        style={{
+          borderColor: '#349064',
+          borderWidth: 1,
+          paddingHorizontal: 20,
+          paddingVertical: 12,
+          borderRadius: 12,
+        }}
+      >
+        <Text
+          style={{
+            color: '#349064',
+            fontSize: 15,
+            fontFamily: FONTS.main_semiBold,
+            textTransform: 'uppercase',
+          }}
+        >
+          Ir para perfil
+        </Text>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={handleLogout}
         style={{

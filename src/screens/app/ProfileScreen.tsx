@@ -25,7 +25,7 @@ import styles from "../../styles/profileScreen.style";
 export function ProfileScreen() {
     const navigation = useNavigation();
     const { user, setUser } = useAuthContext() as {
-      user: { nome?: string } | null;
+      user: { id?: number; nome?: string } | null;
       setUser: (userData: null) => Promise<void>;
     };
 
@@ -35,22 +35,12 @@ export function ProfileScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
-    async function handleRegister() {
-        const result = await register();
-
-        if (!result.user) {
-            setModalMessage(result.errorMessage ?? "Não foi possivel concluir o cadastro.");
-            setModalVisible(true);
-            return;
-        }
-
-        setModalMessage(result.successMessage ?? "Cadastro realizado com sucesso.");
-        setModalVisible(true);
+    async function handleLogout() {
+        await setUser(null);
     }
 
     function handleCloseModal() {
         setModalVisible(false);
-        resetFeedback();
     }
 
     return (
@@ -68,7 +58,7 @@ export function ProfileScreen() {
                 <ImageBackground source={require('../../assets/images/header.png')} style={{width: "100%", aspectRatio: 0.88}} resizeMode="contain">
                   <View style={styles.header}>
                     <View style={styles.headerTop}>
-                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.goBack()}>
+                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.navigate("Home" as never)}>
                         <Image source={ICONS.light_back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                       </TouchableOpacity>
@@ -144,28 +134,28 @@ export function ProfileScreen() {
                   </View>
                 </View>
                 <View style={{alignItems: 'center'}}>
-                  <TouchableOpacity style={styles.signOut}>
+                  <TouchableOpacity style={styles.signOut} onPress={handleLogout}>
                     <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.status.error}}>Sair</Text>
                   </TouchableOpacity>
                 </View>
               </View>
               <View style={styles.footer}>
-                <View style={styles.footerItem}>
+                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Home" as never)}>
                   <Image source={ICONS.home} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Início</Text>
-                </View>
-                <View style={styles.footerItem}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Schedule" as never)}>
                   <Image source={ICONS.schedule} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Agenda</Text>
-                </View>
-                <View style={styles.footerItem}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Progress" as never)}>
                   <Image source={ICONS.progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Progresso</Text>
-                </View>
-                <View style={styles.footerItemChecked}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Profile" as never)}>
                   <Image source={ICONS.profile} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Perfil</Text>
-                </View>
+                </TouchableOpacity>
               </View>
               <Modal visible={modalVisible} animationType="slide" transparent={true}>
                 <View style={styles.backgroundModal}>
