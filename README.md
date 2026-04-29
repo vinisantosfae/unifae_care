@@ -32,6 +32,14 @@ Desenvolvedores: Maria Luiza Nery Pinto, Vinícius Mendes Santos e Maria Eduarda
   </tr>
 </table>
 
+### 👤 Perfil
+<table>
+  <tr>
+    <td><img width="402" height="1731" alt="iPhone 17 - 6" src="https://github.com/user-attachments/assets/5c086de3-ffed-436a-952c-2053ad9f39a0" />
+</td>
+  </tr>
+</table>
+
 
 ## ▶️ Como rodar?
 
