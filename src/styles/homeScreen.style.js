@@ -6,27 +6,31 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    backgroundColor: COLORS.primary
-  },
-  body: {
+    backgroundColor: COLORS.primary,
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   container: {
     marginTop: 25,
     marginHorizontal: 20,
     paddingHorizontal: 10,
     paddingVertical: 15,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
+    shadowColor: COLORS.primary,
+    shadowOpacity: 0.45,
+    shadowRadius: 15,
     borderRadius: 15,
     backgroundColor: COLORS.light
   },
   containerInternal: {
     marginTop: 15,
+    borderColor: COLORS.secondary,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    shadowColor: COLORS.secondary,
+    shadowOpacity: 0.4,
     width: "100%",
     padding: 15,
     borderRadius: 15,
+    shadowRadius: 15,
     backgroundColor: "#D7EADE36",
     gap: 15
   },
@@ -35,29 +39,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     alignItems: "center"
-  },
-  weeklyGoal: {
-    marginTop: 60,
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    width: "100%",
-    alignItems: "center"
-  },
-  bar: {
-    marginTop: 25,
-    width: "100%",
-    height: 10,
-    backgroundColor: "#D7EADEAB",
-    borderRadius: 10
-  },
-  progressBar: {
-    width: "67%",
-    height: 10,
-    backgroundColor: COLORS.light,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "flex-end"
   },
   backgroundModal: {
     flex: 1,
@@ -74,8 +55,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   footer: {
-    marginTop: 70,
-    backgroundColor: "#34906494",
+    marginTop: 60,
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 5,
     paddingVertical: 10,
     flexDirection: "row",
@@ -95,7 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 2,
     flex: 1,
-    backgroundColor: COLORS.footer.primary,
+    backgroundColor: "#99CFB130",
     borderRadius: 25,
     padding: 5
   },

@@ -4,6 +4,7 @@ import {useAuthContext} from "../../contexts/AuthContext";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
+import Svg, { Circle } from 'react-native-svg';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RadioButton } from 'react-native-paper';
 import {
@@ -44,6 +45,60 @@ export function HomeScreen() {
         setModalVisible(false);
     }
 
+    const ProgressCircle = () => {
+      const size = 120; // pode ajustar se quiser
+      const strokeWidth = 9; // igual ao seu borderWidth
+      const radius = (size - strokeWidth) / 2;
+      const circumference = 2 * Math.PI * radius;
+
+      const offset = circumference - (progress / 100) * circumference;
+
+      return (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 15,
+            aspectRatio: 1,
+          }}
+        >
+          <Svg width={size} height={size}>
+            {/* Fundo */}
+            <Circle
+              stroke="#E0E0E0"
+              fill="none"
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              strokeWidth={strokeWidth}
+            />
+
+            {/* Progresso */}
+            <Circle
+              stroke="#2E7D32"
+              fill="none"
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              strokeWidth={strokeWidth}
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              strokeLinecap="round"
+              rotation="-90"
+              origin={`${size / 2}, ${size / 2}`}
+            />
+          </Svg>
+
+          {/* Texto no centro */}
+          <View style={{ position: "absolute" }}>
+            <Text style={{ fontFamily: FONTS.main_bold, fontSize: 24 }}>
+              {progress}%
+            </Text>
+          </View>
+        </View>
+      );
+    };
+
     return (
       <SafeAreaView edges={['top']} style={{ flex: 1 }}>
         <KeyboardAvoidingView
@@ -57,22 +112,20 @@ export function HomeScreen() {
             >
               <View style={styles.header}>
                 <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
-                <View style={{alignItems: "flex-end"}}>
-                  <TouchableOpacity style={{padding: 7, backgroundColor: COLORS.input.background, borderRadius: "100%", width: 37}} onPress={() => navigation.navigate("Alerts" as never)}>
+                <View style={{alignItems: "flex-end", marginTop: 10}}>
+                  <TouchableOpacity style={{padding: 7, backgroundColor: COLORS.input.background, borderRadius: "100%", width: 37}} onPress={() => navigation.navigate("Home" as never)}>
                     <Image source={ICONS.alerts_light} style={{aspectRatio: 1, resizeMode: "contain", width: 23, height: 23}}/>
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.body}>
-                <ImageBackground source={require('../../assets/images/header_home.png')} style={{width: "100%", aspectRatio: 0.95}} resizeMode="contain">
-                  <View style={{marginHorizontal: 20}}>
-                    <View style={{alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
-                      <View style={{width: "40%"}}>
-                        <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold}}>Olá, {user?.nome}!</Text>
-                        <Text style={{fontSize: 16, marginTop: 10, color: COLORS.text.light, fontFamily: FONTS.main_regular}}>Seu cuidado diário faz toda a diferença na sua recuperação</Text>
-                      </View>
-                      <Image source={require('../../assets/images/phisioterapy.png')} style={{aspectRatio: 1, resizeMode: "contain", width: "50%", height: 180}}/>
+              <View>
+                <ImageBackground source={require('../../assets/images/header_home.png')} style={{width: "100%"}}>
+                  <View style={{marginHorizontal: 20, alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
+                    <View style={{width: "40%"}}>
+                      <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold}}>Olá, {user?.nome}!</Text>
+                      <Text style={{fontSize: 16, marginTop: 10, color: COLORS.text.light, fontFamily: FONTS.main_regular}}>Seu cuidado diário faz toda a diferença na sua recuperação</Text>
                     </View>
+                    <Image source={require('../../assets/images/phisioterapy.png')} style={{aspectRatio: 1, resizeMode: "contain", width: "50%", height: 180}}/>
                   </View>
                   <View style={styles.container}>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
@@ -101,9 +154,7 @@ export function HomeScreen() {
                 <View style={styles.container}>
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Seu progresso</Text>
                   <View style={{flexDirection: "row", gap: 10, marginTop: 15, alignItems: "center"}}>
-                    <View style={{justifyContent: "center", alignItems: 'center', borderRadius: "100%", borderWidth: 9, borderColor: "#E0E0E0", padding: 15, aspectRatio: 1}}>
-                      <Text style={{fontFamily: FONTS.main_bold, fontSize: 24}}>{progress}%</Text>
-                    </View>
+                    <ProgressCircle />
                     {
                       progress <= 20 ? (
                         <View style={{alignItems: "center", flex: 1, justifyContent: "center"}}>
@@ -149,33 +200,33 @@ export function HomeScreen() {
               <View style={styles.footer}>
                 <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Home")}>
                   <Image source={ICONS.home} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Início</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Início</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Schedule" as never)}>
                   <Image source={ICONS.schedule} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Agenda</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Agenda</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Exercises" as never)}>
                   <Image source={ICONS.exercises} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Exercícios</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Exercícios</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Progress" as never)}>
                   <Image source={ICONS.progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Progresso</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Progresso</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Profile")}>
                   <Image source={ICONS.profile} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Perfil</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Perfil</Text>
                 </TouchableOpacity>
               </View>
               <Modal visible={modalVisible} animationType="slide" transparent={true}>
                 <View style={styles.backgroundModal}>
-                    <View style={styles.modal}>
+                  <View style={styles.modal}>
                     <Text style={styles.modalMessage}>{modalMessage}</Text>
                     <TouchableOpacity onPress={handleCloseModal} style={styles.modalButton}>
                         <Text style={{color: COLORS.text.primary, fontWeight: "bold", textTransform: "uppercase"}}>Ok</Text>
                     </TouchableOpacity>
-                    </View>
+                  </View>
                 </View>
               </Modal>
             </ScrollView>
