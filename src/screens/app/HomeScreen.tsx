@@ -153,7 +153,7 @@ export function HomeScreen() {
                 </ImageBackground>
                 <View style={styles.container}>
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Seu progresso</Text>
-                  <View style={{flexDirection: "row", gap: 10, marginTop: 15, alignItems: "center"}}>
+                  <View style={{flexDirection: "row", gap: 2, marginTop: 15, alignItems: "center"}}>
                     <ProgressCircle />
                     {
                       progress <= 20 ? (
@@ -200,23 +200,23 @@ export function HomeScreen() {
               <View style={styles.footer}>
                 <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Home")}>
                   <Image source={ICONS.home} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Início</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Início</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Schedule" as never)}>
                   <Image source={ICONS.schedule} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Agenda</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Agenda</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Exercises" as never)}>
                   <Image source={ICONS.exercises} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Exercícios</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Exercícios</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Progress" as never)}>
                   <Image source={ICONS.progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Progresso</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Progresso</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Profile")}>
                   <Image source={ICONS.profile} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 12}}>Perfil</Text>
+                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Perfil</Text>
                 </TouchableOpacity>
               </View>
               <Modal visible={modalVisible} animationType="slide" transparent={true}>
