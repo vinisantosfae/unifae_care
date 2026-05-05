@@ -55,7 +55,7 @@ export function ProfileScreen() {
                 keyboardShouldPersistTaps="handled"
             >
               <View>
-                <ImageBackground source={require('../../assets/images/header.png')} style={{width: "100%", aspectRatio: 0.88}} resizeMode="contain">
+                <ImageBackground source={require('../../assets/images/header_profile.png')} style={{width: "100%", aspectRatio: 0.88}} resizeMode="contain">
                   <View style={styles.header}>
                     <View style={styles.headerTop}>
                       <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.navigate("Home" as never)}>
@@ -140,7 +140,7 @@ export function ProfileScreen() {
                 </View>
               </View>
               <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Home" as never)}>
+                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Home")}>
                   <Image source={ICONS.home} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Início</Text>
                 </TouchableOpacity>
@@ -152,7 +152,7 @@ export function ProfileScreen() {
                   <Image source={ICONS.progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Progresso</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Profile" as never)}>
+                <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Profile")}>
                   <Image source={ICONS.profile} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                   <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Perfil</Text>
                 </TouchableOpacity>

@@ -13,7 +13,7 @@ export default function AppDrawer() {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <Drawer.Navigator
                 id={"drawer"}
-                initialRouteName="Profile"
+                initialRouteName="Home"
                 screenOptions={{
                     drawerPosition: "right",
                     headerShown: false,

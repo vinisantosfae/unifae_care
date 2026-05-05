@@ -8,6 +8,7 @@ export const ICONS = {
     numbers: require("../assets/icons/numbers_icon.png"),
     square_numbers: require("../assets/icons/square_numbers_icon.png"),
     alerts: require("../assets/icons/alerts_icon.png"),
+    alerts_light: require("../assets/icons/alerts_light_icon.png"),
     data_privacy: require("../assets/icons/data_privacy_icon.png"),
     arrow_right: require("../assets/icons/arrow_right_icon.png"),
     home: require("../assets/icons/home_icon.png"),
@@ -16,5 +17,7 @@ export const ICONS = {
     weekly_goal: require("../assets/icons/weekly_goal_icon.png"),
     progress: require("../assets/icons/progress_icon.png"),
     schedule: require("../assets/icons/schedule_icon.png"),
-    user_image: require("../assets/icons/user_image.png")
+    user_image: require("../assets/icons/user_image.png"),
+    time: require("../assets/icons/time_icon.png"),
+    exercises: require("../assets/icons/exercises_icon.png")
 }
