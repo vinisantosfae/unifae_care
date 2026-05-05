@@ -32,6 +32,14 @@ Desenvolvedores: Maria Luiza Nery Pinto, Vinícius Mendes Santos e Maria Eduarda
   </tr>
 </table>
 
+### 🏠 Home
+<table>
+  <tr>
+    <td><img width="271" height="820" alt="image" src="https://github.com/user-attachments/assets/c809e7bb-d1ac-403d-932a-58ea79de8cc7" />
+</td>
+  </tr>
+</table>
+
 ### 👤 Perfil
 <table>
   <tr>
