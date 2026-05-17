@@ -65,7 +65,7 @@ export function ProfileScreen() {
                       <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
                     </View>
                     <View style={{alignItems: "center", marginTop: 25}}>
-                      <Image source={ICONS.user_image} style={{aspectRatio: 1, resizeMode: "contain", width: 150, height: 150}}/>
+                      <Image source={ICONS.user_image_light} style={{aspectRatio: 1, resizeMode: "contain", width: 150, height: 150}}/>
                       <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>{user?.nome}</Text>
                       <Text style={{fontSize: 15, color: COLORS.text.light, fontFamily: FONTS.main_light}}>ID: {user?.id}</Text>
                     </View>

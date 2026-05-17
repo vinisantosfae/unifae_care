@@ -5,6 +5,7 @@ import { HomeScreen } from "../screens/app/HomeScreen";
 import { ProfileScreen } from "../screens/app/ProfileScreen";
 import { ScheduleScreen } from "../screens/app/ScheduleScreen";
 import { ProgressScreen } from "../screens/app/ProgressScreen";
+import { ExerciseScreen } from "../screens/app/ExerciseScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -13,7 +14,7 @@ export default function AppDrawer() {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <Drawer.Navigator
                 id={"drawer"}
-                initialRouteName="Home"
+                initialRouteName="Exercise"
                 screenOptions={{
                     drawerPosition: "right",
                     headerShown: false,
@@ -23,6 +24,7 @@ export default function AppDrawer() {
                 <Drawer.Screen name="Schedule" component={ScheduleScreen} />
                 <Drawer.Screen name="Progress" component={ProgressScreen} />
                 <Drawer.Screen name="Profile" component={ProfileScreen} />
+                <Drawer.Screen name="Exercise" component={ExerciseScreen} />
             </Drawer.Navigator>
         </GestureHandlerRootView>
     );

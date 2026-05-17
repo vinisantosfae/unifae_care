@@ -21,4 +21,7 @@ export const ICONS = {
     time: require("../assets/icons/time_icon.png"),
     exercises: require("../assets/icons/exercises_icon.png"),
     weekly_goal: require("../assets/icons/weekly_goal_icon.png"),
+    repetitions: require("../assets/icons/repetitions_icon.png"),
+    series: require("../assets/icons/series_icon.png"),
+    exercises: require("../assets/icons/exercises_icon.png"),
 }
