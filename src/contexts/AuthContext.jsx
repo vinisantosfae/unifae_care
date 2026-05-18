@@ -1,34 +1,66 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {clearAppId, setAppId} from "../services/app_config";
+import {clearSessionData, clearUserToken, setSessionData, setUserToken} from "../services/session";
 
-const LOGGED_USER_KEY = "@CHECKEI_loggedd_user";
+const SESSION_KEY = "@UNIFAE_CARE_session";
 
 const AuthContext = createContext({
     user: null,
+    session: null,
+    setSession: async () => {},
     setUser: async () => {},
     loading: true,
 });
 
 export function AuthProvider({ children }) {
     const [user, setUserState] = useState(null);
+    const [session, setSessionState] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    async function setSession(sessionData) {
+        setSessionState(sessionData);
+        setUserState(sessionData?.user ?? null);
+
+        if (sessionData) {
+            setUserToken(sessionData.accessToken);
+            setSessionData(sessionData);
+            setAppId(sessionData.appId);
+            await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+            return;
+        }
+
+        clearUserToken();
+        clearSessionData();
+        clearAppId();
+        await AsyncStorage.removeItem(SESSION_KEY);
+    }
+
     async function setUser(userData) {
+        if (!userData) {
+            await setSession(null);
+            return;
+        }
+
+        const nextSession = session ? { ...session, user: userData } : null;
         setUserState(userData);
 
-        if (userData) {
-            await AsyncStorage.setItem(LOGGED_USER_KEY, JSON.stringify(userData));
-        } else {
-            await AsyncStorage.removeItem(LOGGED_USER_KEY);
+        if (nextSession) {
+            await setSession(nextSession);
         }
     }
 
     async function loadLoggedUser() {
         try {
-            const data = await AsyncStorage.getItem(LOGGED_USER_KEY);
+            const data = await AsyncStorage.getItem(SESSION_KEY);
 
             if (data) {
-                setUserState(JSON.parse(data));
+                const storedSession = JSON.parse(data);
+                setSessionState(storedSession);
+                setUserState(storedSession.user);
+                setUserToken(storedSession.accessToken);
+                setSessionData(storedSession);
+                setAppId(storedSession.appId);
             }
         } catch (error) {
             console.log("Erro ao carregar usuário logado:", error);
@@ -42,7 +74,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loading }}>
+        <AuthContext.Provider value={{ user, session, setSession, setUser, loading }}>
             {children}
         </AuthContext.Provider>
     );

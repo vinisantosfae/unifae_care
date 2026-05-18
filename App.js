@@ -1,10 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
 import {NavigationContainer} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import {RootNavigation} from "./src/routes";
 import { AuthProvider } from "./src/contexts/AuthContext";
-import { initDatabase } from "./src/database/sqlite";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -14,12 +12,6 @@ export default function App() {
         "Fredoka-Medium": require("./src/assets/fonts/Fredoka/Fredoka-Medium.ttf"),
         "Fredoka-SemiBold": require("./src/assets/fonts/Fredoka/Fredoka-SemiBold.ttf"),
     });
-
-    useEffect(() => {
-        initDatabase().catch((error) => {
-            console.log("Erro ao inicializar o banco local:", error);
-        });
-    }, []);
 
     if (!fontsLoaded) {
         return null;

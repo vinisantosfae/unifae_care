@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { userRepository } from '../repositories/UserRepository';
+import { AuthSession } from '../models/Api';
+import { loginWithApi } from '../services/auth';
 
 interface LoginResult {
-  user: Awaited<ReturnType<typeof userRepository.login>> | null;
+  session: AuthSession | null;
   errorMessage: string | null;
   successMessage: string | null;
 }
 
 interface UseLoginViewModelParams {
-  onSuccess?: (user: Awaited<ReturnType<typeof userRepository.login>>) => Promise<void> | void;
+  onSuccess?: (session: AuthSession) => Promise<void> | void;
 }
 
 export function useLoginViewModel(params?: UseLoginViewModelParams) {
@@ -31,29 +32,32 @@ export function useLoginViewModel(params?: UseLoginViewModelParams) {
     setSuccess(null);
 
     try {
-      const loggedUser = await userRepository.login(formData.email, formData.password);
+      const session = await loginWithApi(formData.email, formData.password);
 
       setSuccess('Login realizado com sucesso.');
 
       if (params?.onSuccess) {
-        await params.onSuccess(loggedUser);
+        await params.onSuccess(session);
       }
 
       return {
-        user: loggedUser,
+        session,
         errorMessage: null,
         successMessage: 'Login realizado com sucesso.',
       };
-    } catch (loginError) {
+    } catch (loginError: any) {
+      const backendMessage = loginError?.response?.data?.message;
       const message =
-        loginError instanceof Error
-          ? loginError.message
-          : 'Não foi possivel realizar o login.';
+        typeof backendMessage === 'string'
+          ? backendMessage
+          : loginError instanceof Error
+            ? loginError.message
+            : 'Não foi possivel realizar o login.';
 
       setError(message);
 
       return {
-        user: null,
+        session: null,
         errorMessage: message,
         successMessage: null,
       };

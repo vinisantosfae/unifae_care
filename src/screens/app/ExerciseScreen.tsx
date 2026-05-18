@@ -1,11 +1,9 @@
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
-import {useAuthContext} from "../../contexts/AuthContext";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RadioButton } from 'react-native-paper';
 import Svg, { Circle } from 'react-native-svg';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {
@@ -21,15 +19,13 @@ import {
   TouchableOpacity
 } from "react-native";
 import styles from "../../styles/exerciseScreen.style";
+import {useExerciseViewModel} from "../../viewmodels/useExerciseViewModel";
 
 export function ExerciseScreen() {
-    const navigation = useNavigation();
-    const { user, setUser } = useAuthContext() as {
-      user: { id?: number; nome?: string } | null;
-      setUser: (userData: null) => Promise<void>;
-    };
-
-    const [progress, setProgress] = useState(78)
+    const navigation = useNavigation<any>();
+    const route = useRoute<any>();
+    const [progress, setProgress] = useState(0)
+    const { exercise, loading, error, submitting, concludeExercise } = useExerciseViewModel(route.params?.prescriptionItemId);
 
     const ProgressCircle = () => {
       const size = 100;
@@ -85,37 +81,30 @@ export function ExerciseScreen() {
       );
     };
 
-    const exercise = {
-      "prescriptionId": 2,
-      "prescriptionItemId": 3,
-      "exerciseId": 3,
-      "title": "Rotação externa de ombro",
-      "videoUrl": "https://www.youtube.com/watch?v=4eJmCcLxjjQ&t=2s",
-      "description": "Descrição do exercício.",
-      "taxonomy": {
-        "axis": "Membros Superiores",
-        "problem": "Lombalgia",
-        "objective": "Mobilidade"
-      },
-      "metrics": {
-        "repetitionsRaw": "12",
-        "series": "3",
-        "volume": "15"
-      },
-      "instructions": "Passo a passo em texto.",
-      "physiotherapistNotes": "Dica do fisioterapeuta."
-    }
-
-    async function concludeExercise() {
+    async function handleConcludeExercise() {
+      try {
+        const completion = await concludeExercise();
+        navigation.navigate("Feedback" as never, { executionId: completion.executionId } as never);
+      } catch {
+        // A tela continua no detalhe; o usuário pode tentar novamente.
+      }
     }
 
     const getYoutubeId = () => {
       const regex =
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
 
-      const match = exercise.videoUrl.match(regex)
+      const match = exercise?.videoUrl.match(regex)
 
       return match ? match[1] : null
+    }
+
+    if (loading) {
+      return <SafeAreaView edges={['top']} style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Text>Carregando exercício...</Text></SafeAreaView>;
+    }
+
+    if (error || !exercise) {
+      return <SafeAreaView edges={['top']} style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}><Text>{error ?? "Exercício não encontrado."}</Text></SafeAreaView>;
     }
 
     return (
@@ -140,7 +129,7 @@ export function ExerciseScreen() {
                       <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
                     </View>
                   </View>
-                  <View style={{marginHorizontal: 20, alignItems: "end", flexDirection: "row", justifyContent: "space-between", paddingTop: 20}}>
+                  <View style={{marginHorizontal: 20, alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between", paddingTop: 20}}>
                     <View style={{width: "60%"}}>
                       <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>{exercise.title}</Text>
                       <View style={[styles.taxonomy, {marginTop: 20}]}>
@@ -211,25 +200,9 @@ export function ExerciseScreen() {
                 <View style={{marginTop: 40}}>
                   <Text style={{fontSize: 24, color: COLORS.text.primary, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Passo a passo</Text>
                   <View style={{marginTop: 20}}>
-                    <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
-                      <View style={{backgroundColor: COLORS.primary, width: 40, height: 40, borderRadius: "100%", justifyContent: "center", alignItems: "center"}}><Text style={{color: COLORS.text.light}}>1</Text></View>
-                      <Text>Posicionamento</Text>
-                    </View>
-                    <Text style={{marginLeft: 50}}>Mantenha o cotovelo junto ao corpo em um ângulo de 90 graus. Use uma toalha dobrada sob a axila para maior estabilidade se necessário</Text>
-                  </View>
-                  <View>
-                    <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
-                      <View style={{backgroundColor: COLORS.primary, width: 40, height: 40, borderRadius: "100%", justifyContent: "center", alignItems: "center"}}><Text style={{color: COLORS.text.light}}>2</Text></View>
-                      <Text>Movimento</Text>
-                    </View>
-                    <Text style={{marginLeft: 50}}>Mantenha o cotovelo junto ao corpo em um ângulo de 90 graus. Use uma toalha dobrada sob a axila para maior estabilidade se necessário</Text>
-                  </View>
-                  <View>
-                    <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
-                      <View style={{borderColor: COLORS.primary, borderWidth: 1, width: 40, height: 40, borderRadius: "100%", justifyContent: "center", alignItems: "center"}}><Text style={{color: COLORS.text.primary}}>3</Text></View>
-                      <Text>Retorno</Text>
-                    </View>
-                    <Text style={{marginLeft: 50}}>Mantenha o cotovelo junto ao corpo em um ângulo de 90 graus. Use uma toalha dobrada sob a axila para maior estabilidade se necessário</Text>
+                    <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular}}>
+                      {exercise.instructions || "Nenhuma instrução disponível para este exercício."}
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.tip}>
@@ -238,7 +211,7 @@ export function ExerciseScreen() {
                   </View>
                   <View>
                     <Text>Dica do fisioterapeuta</Text>
-                    <Text>"Foque na qualidade do movimento, não na carga. Se sentir uma dor aguda, diminua a amplitude e respire profundamente durante a execução."</Text>
+                    <Text>{exercise.physiotherapistNotes || "Nenhuma observação adicional cadastrada."}</Text>
                   </View>
                 </View>
               </View>
@@ -267,8 +240,8 @@ export function ExerciseScreen() {
                     </View>
                   </View>
                   <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.concludeButton} onPress={concludeExercise}>
-                      <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.primary}}>Concluir atividade</Text>
+                    <TouchableOpacity style={styles.concludeButton} onPress={handleConcludeExercise} disabled={submitting}>
+                      <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.primary}}>{submitting ? "Concluindo..." : "Concluir atividade"}</Text>
                     </TouchableOpacity>
                   </View>
                 </ImageBackground>

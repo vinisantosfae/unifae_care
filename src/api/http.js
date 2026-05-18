@@ -15,7 +15,7 @@ export async function api() {
         responseType: "json",
     });
 
-    client.interceptors.response.use(
+    client.interceptors.request.use(
         async (config) => {
             const token = getUserToken();
 
@@ -25,7 +25,7 @@ export async function api() {
 
             return config;
         }
-    )
+    );
 
     client.interceptors.response.use(
         (response) => {

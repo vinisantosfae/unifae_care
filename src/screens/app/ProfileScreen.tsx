@@ -21,11 +21,12 @@ import {
   Modal
 } from "react-native";
 import styles from "../../styles/profileScreen.style";
+import {useProfileViewModel} from "../../viewmodels/useProfileViewModel";
 
 export function ProfileScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const { user, setUser } = useAuthContext() as {
-      user: { id?: number; nome?: string } | null;
+      user: { id?: number; name?: string } | null;
       setUser: (userData: null) => Promise<void>;
     };
 
@@ -34,6 +35,8 @@ export function ProfileScreen() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
+    const { profileData, loading, error } = useProfileViewModel();
+    const weeklyProgress = profileData?.weeklyProgress?.percentCompleted ?? 0;
 
     async function handleLogout() {
         await setUser(null);
@@ -65,9 +68,9 @@ export function ProfileScreen() {
                       <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
                     </View>
                     <View style={{alignItems: "center", marginTop: 25}}>
-                      <Image source={ICONS.user_image_light} style={{aspectRatio: 1, resizeMode: "contain", width: 150, height: 150}}/>
-                      <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>{user?.nome}</Text>
-                      <Text style={{fontSize: 15, color: COLORS.text.light, fontFamily: FONTS.main_light}}>ID: {user?.id}</Text>
+                      <Image source={ICONS.user_image} style={{aspectRatio: 1, resizeMode: "contain", width: 150, height: 150}}/>
+                      <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>{profileData?.profile.name ?? user?.name}</Text>
+                      <Text style={{fontSize: 15, color: COLORS.text.light, fontFamily: FONTS.main_light}}>ID: {profileData?.profile.id ?? user?.id}</Text>
                     </View>
                   </View>
                 </ImageBackground>
@@ -79,7 +82,7 @@ export function ProfileScreen() {
                     <View style={styles.responsiblesInfo}>
                       <View style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15}}></View>
                       <View>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Dr. Sarah Chen</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{profileData?.responsibleStudent?.name ?? "Dr. Sarah Chen"}</Text>
                         <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 3}}>Especialista Ortopédica</Text>
                       </View>
                     </View>
@@ -89,8 +92,8 @@ export function ProfileScreen() {
                     <View style={styles.responsiblesInfo}>
                       <View style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15}}></View>
                       <View>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Dr. Vanessa</Text>
-                        <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 3}}>Especialista Ortopédica</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{profileData?.coordinator?.name ?? "Dr. Vanessa"}</Text>
+                        <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 3}}>{profileData?.coordinator?.primarySpecialty ?? "Especialista Ortopédica"}</Text>
                       </View>
                     </View>
                   </View>
@@ -98,16 +101,18 @@ export function ProfileScreen() {
                 <View style={styles.weeklyGoal}>
                   <Text style={{textTransform: "uppercase", fontFamily: FONTS.main_bold, color: COLORS.text.light, fontSize: 16}}>Meta Semanal</Text>
                   <View style={{flexDirection: "row", gap: 5, alignItems: "flex-end", marginTop: 13}}>
-                    <Text style={{fontSize: 32, fontFamily: FONTS.main_bold, color: COLORS.text.light}}>67%</Text>
+                    <Text style={{fontSize: 32, fontFamily: FONTS.main_bold, color: COLORS.text.light}}>{weeklyProgress}%</Text>
                     <Text style={{fontFamily: FONTS.main_regular, color: COLORS.text.light, marginBottom: 5, fontSize: 16 }}>Concluído</Text>
                   </View>
                   <View style={styles.bar}>
-                    <View style={styles.progressBar}>
+                    <View style={[styles.progressBar, {width: `${weeklyProgress}%`}]}>
                       <Image source={ICONS.weekly_goal_progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
                     </View>
                   </View>
                 </View>
                 <View style={styles.configAndSupport}>
+                  {loading && <Text style={{color: COLORS.text.primary}}>Carregando perfil...</Text>}
+                  {error && <Text style={{color: COLORS.text.status.error}}>{error}</Text>}
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_bold, fontSize: 18, textTransform: "uppercase"}}>Configurações e Suporte</Text>
                   <View style={styles.configs}>
                     <View style={styles.config}>

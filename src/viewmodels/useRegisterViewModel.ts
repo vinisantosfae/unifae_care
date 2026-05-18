@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { userRepository } from '../repositories/UserRepository';
-import { AuthUser, UserType, USER_TYPE_OPTIONS } from '../models/User';
+import { UserType, USER_TYPE_OPTIONS } from '../models/User';
 
 interface RegisterPayload {
   name: string;
@@ -11,17 +10,13 @@ interface RegisterPayload {
   ra: string;
 }
 
-interface UseRegisterViewModelParams {
-  onSuccess?: (user: AuthUser) => Promise<void> | void;
-}
-
 interface RegisterResult {
-  user: AuthUser | null;
+  user: null;
   errorMessage: string | null;
   successMessage: string | null;
 }
 
-export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
+export function useRegisterViewModel() {
   const [userType, setUserType] = useState<UserType>('patient');
   const [name, setName] = useState('');
   const [ra, setRa] = useState('');
@@ -43,12 +38,8 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
 
   async function register(payload?: Partial<RegisterPayload>): Promise<RegisterResult> {
     const formData = {
-      name: payload?.name ?? name,
-      email: payload?.email ?? email,
       password: payload?.password ?? password,
       confirmPassword: payload?.confirmPassword ?? confirmPassword,
-      userType: payload?.userType ?? userType,
-      ra: payload?.ra ?? ra,
     };
 
     setLoading(true);
@@ -59,49 +50,13 @@ export function useRegisterViewModel(params?: UseRegisterViewModelParams) {
       const message = 'As senhas não coincidem.';
       setError(message);
       setLoading(false);
-
-      return {
-        user: null,
-        errorMessage: message,
-        successMessage: null,
-      };
+      return { user: null, errorMessage: message, successMessage: null };
     }
 
-    try {
-      const createdUser = await userRepository.createUser({
-        nome: formData.name,
-        email: formData.email,
-        senha: formData.password,
-        tipoUsuario: formData.userType,
-        ra: formData.userType === 'patient' ? null : formData.ra,
-      });
-
-      setSuccess('Cadastro realizado com sucesso.');
-
-      if (params?.onSuccess) {
-        await params.onSuccess(createdUser);
-      }
-
-      return {
-        user: createdUser,
-        errorMessage: null,
-        successMessage: 'Cadastro realizado com sucesso.',
-      };
-    } catch (registerError) {
-      const message =
-        registerError instanceof Error
-          ? registerError.message
-          : 'Não foi possivel concluir o cadastro.';
-
-      setError(message);
-      return {
-        user: null,
-        errorMessage: message,
-        successMessage: null,
-      };
-    } finally {
-      setLoading(false);
-    }
+    const message = 'Cadastro indisponível no momento.';
+    setError(message);
+    setLoading(false);
+    return { user: null, errorMessage: message, successMessage: null };
   }
 
   function resetFeedback() {

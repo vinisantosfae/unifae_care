@@ -1,6 +1,5 @@
 import {useNavigation} from "@react-navigation/native";
 import {useState} from "react";
-import {useAuthContext} from "../../contexts/AuthContext";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
@@ -25,8 +24,6 @@ import styles from "../../styles/registerScreen.style";
 
 export function RegisterScreen() {
     const navigation = useNavigation();
-    const { setUser } = useAuthContext();
-
     const {
         userType,
         setUserType,
@@ -44,11 +41,7 @@ export function RegisterScreen() {
         canSubmit,
         register,
         resetFeedback,
-    } = useRegisterViewModel({
-        onSuccess: async (user) => {
-            await setUser(user);
-        },
-    });
+    } = useRegisterViewModel();
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);

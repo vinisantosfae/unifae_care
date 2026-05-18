@@ -22,14 +22,16 @@ import {
   Modal
 } from "react-native";
 import styles from "../../styles/homeScreen.style";
+import {useHomeViewModel} from "../../viewmodels/useHomeViewModel";
 
 export function HomeScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const { user, setUser } = useAuthContext() as {
-      user: { id?: number; nome?: string } | null;
+      user: { id?: number; name?: string } | null;
       setUser: (userData: null) => Promise<void>;
     };
-    const [progress, setProgress] = useState(78)
+    const { home, loading, error } = useHomeViewModel();
+    const progress = home?.plan.percentCompleted ?? 0;
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -122,7 +124,7 @@ export function HomeScreen() {
                 <ImageBackground source={require('../../assets/images/header_home.png')} style={{width: "100%"}}>
                   <View style={{marginHorizontal: 20, alignItems: "center", flexDirection: "row", justifyContent: "space-between"}}>
                     <View style={{width: "40%"}}>
-                      <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold}}>Olá, {user?.nome}!</Text>
+                      <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold}}>Olá, {user?.name}!</Text>
                       <Text style={{fontSize: 16, marginTop: 10, color: COLORS.text.light, fontFamily: FONTS.main_regular}}>Seu cuidado diário faz toda a diferença na sua recuperação</Text>
                     </View>
                     <Image source={require('../../assets/images/phisioterapy.png')} style={{aspectRatio: 1, resizeMode: "contain", width: "50%", height: 180}}/>
@@ -130,13 +132,13 @@ export function HomeScreen() {
                   <View style={styles.container}>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                       <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 17}}>Seu plano de hoje</Text>
-                      <Text style={{color: COLORS.text.primary}}>1 exercício</Text>
+                      <Text style={{color: COLORS.text.primary}}>{home?.plan.totalExercises ?? 0} exercício(s)</Text>
                     </View>
                     <View style={[styles.containerInternal, {justifyContent: "space-between", alignItems: "center", flexDirection: "row"}]}>
                       <View>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Mobilidade de Ombro</Text>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 7}}>Pós-cirúrgico</Text>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 2}}>Câncer de Mama</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{home?.nextExercise?.exerciseName ?? "Sem próximo exercício"}</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 7}}>{home?.nextExercise?.axis ?? "-"}</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 2}}>{home?.nextExercise?.problem ?? "-"}</Text>
                         <View style={{alignItems: 'center', flexDirection: "row", marginTop: 15, gap: 5}}>
                           <Image source={ICONS.time} style={{aspectRatio: 1, resizeMode: "contain", width: 35, height: 35}}/>
                           <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>12 min</Text>
@@ -145,7 +147,11 @@ export function HomeScreen() {
                       <Image source={require('../../assets/images/training_home.png')}/>
                     </View>
                     <View style={{alignItems: 'center'}}>
-                      <TouchableOpacity style={styles.button}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => home?.nextExercise && navigation.navigate("Exercise" as never, { prescriptionItemId: home.nextExercise.prescriptionItemId } as never)}
+                        disabled={!home?.nextExercise}
+                      >
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold, fontSize: 15}}>Iniciar Exercício</Text>
                       </TouchableOpacity>
                     </View>
@@ -153,6 +159,8 @@ export function HomeScreen() {
                 </ImageBackground>
                 <View style={styles.container}>
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Seu progresso</Text>
+                  {loading && <Text style={{color: COLORS.text.primary, marginTop: 10}}>Carregando...</Text>}
+                  {error && <Text style={{color: COLORS.text.status.error, marginTop: 10}}>{error}</Text>}
                   <View style={{flexDirection: "row", gap: 2, marginTop: 15, alignItems: "center"}}>
                     <ProgressCircle />
                     {
@@ -173,6 +181,14 @@ export function HomeScreen() {
                       )
                     }
                   </View>
+                  {home?.motivation?.message && (
+                    <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 12}}>
+                      {home.motivation.message}
+                    </Text>
+                  )}
+                  <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 12}}>
+                    Dor hoje: {home?.painToday.recorded ? home.painToday.level ?? "Registrada" : "Ainda não registrada"}
+                  </Text>
                 </View>
                 <View style={styles.container}>
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Equipe Responsável</Text>

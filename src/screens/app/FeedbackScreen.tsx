@@ -1,13 +1,8 @@
-import {useNavigation} from "@react-navigation/native";
-import {useState} from "react";
-import {useAuthContext} from "../../contexts/AuthContext";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RadioButton } from 'react-native-paper';
-import Svg, { Circle } from 'react-native-svg';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import {
   View,
   Text,
@@ -22,15 +17,21 @@ import {
   TextInput
 } from "react-native";
 import styles from "../../styles/feedbackScreen.style";
+import {useFeedbackViewModel} from "../../viewmodels/useFeedbackViewModel";
 
 export function FeedbackScreen() {
-    const navigation = useNavigation();
-    const { user, setUser } = useAuthContext() as {
-      user: { id?: number; nome?: string } | null;
-      setUser: (userData: null) => Promise<void>;
-    };
-    const {observations, setObservations} = useState("")
-    const [feedbackLevel, setFeedbackLevel] = useState(null)
+    const navigation = useNavigation<any>();
+    const route = useRoute<any>();
+    const {
+      observations,
+      setObservations,
+      feedbackLevel,
+      setFeedbackLevel,
+      loading,
+      error,
+      success,
+      saveFeedback,
+    } = useFeedbackViewModel(route.params?.executionId);
 
     const feedbackLevels = [
       {
@@ -65,10 +66,11 @@ export function FeedbackScreen() {
       },
     ]
 
-    function saveFeedback() {
-      feedback = {
-        level: level,
-        observations: observations
+    async function handleSaveFeedback() {
+      const saved = await saveFeedback();
+
+      if (saved) {
+        navigation.navigate("Home" as never);
       }
     }
 
@@ -121,6 +123,8 @@ export function FeedbackScreen() {
                   ))
                 }
                 <View style={styles.observations}>
+                  {error && <Text style={{color: COLORS.text.status.error, marginBottom: 10}}>{error}</Text>}
+                  {success && <Text style={{color: COLORS.primary, marginBottom: 10}}>{success}</Text>}
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 24}}>Observações adicionais</Text>
                   <View style={{backgroundColor: COLORS.light, borderRadius: 15, borderWidth: 1, borderColor: COLORS.primary, padding: 15, marginTop: 10}}>
                     <TextInput
@@ -143,8 +147,8 @@ export function FeedbackScreen() {
                   </View>
                   <Text style={{color: COLORS.text.light, textAlign: "center", marginTop: 25, fontSize: 16}}>Seu progresso é nossa prioridade</Text>
                   <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.saveButton} onPress={saveFeedback}>
-                      <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.primary}}>Salvar feedback</Text>
+                    <TouchableOpacity style={styles.saveButton} onPress={handleSaveFeedback} disabled={loading}>
+                      <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.primary}}>{loading ? "Salvando..." : "Salvar feedback"}</Text>
                     </TouchableOpacity>
                   </View>
                 </ImageBackground>
