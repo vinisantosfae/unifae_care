@@ -33,6 +33,8 @@ export function HomeScreen() {
     };
     const { home, loading, error } = useHomeViewModel();
     const progress = home?.plan.percentCompleted ?? 0;
+    const nextExercise = home?.nextExercise;
+    const showTodayPlan = !!nextExercise && progress < 100;
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -130,33 +132,34 @@ export function HomeScreen() {
                     </View>
                     <Image source={require('../../assets/images/phisioterapy.png')} style={{aspectRatio: 1, resizeMode: "contain", width: "50%", height: 180}}/>
                   </View>
-                  <View style={styles.container}>
-                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                      <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 17}}>Seu plano de hoje</Text>
-                      <Text style={{color: COLORS.text.primary}}>{home?.plan.totalExercises ?? 0} exercício(s)</Text>
-                    </View>
-                    <View style={[styles.containerInternal, {justifyContent: "space-between", alignItems: "center", flexDirection: "row"}]}>
-                      <View>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{home?.nextExercise?.exerciseName ?? "Sem próximo exercício"}</Text>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 7}}>{home?.nextExercise?.axis ?? "-"}</Text>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 2}}>{home?.nextExercise?.problem ?? "-"}</Text>
-                        <View style={{alignItems: 'center', flexDirection: "row", marginTop: 15, gap: 5}}>
-                          <Image source={ICONS.time} style={{aspectRatio: 1, resizeMode: "contain", width: 35, height: 35}}/>
-                          <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>12 min</Text>
-                        </View>
+                  {showTodayPlan && (
+                    <View style={styles.container}>
+                      <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 17}}>Seu plano de hoje</Text>
+                        <Text style={{color: COLORS.text.primary}}>{home?.plan.totalExercises ?? 0} exercício(s)</Text>
                       </View>
-                      <Image source={require('../../assets/images/training_home.png')}/>
+                      <View style={[styles.containerInternal, {justifyContent: "space-between", alignItems: "center", flexDirection: "row"}]}>
+                        <View>
+                          <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{nextExercise!.exerciseName}</Text>
+                          <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 7}}>{nextExercise!.axis}</Text>
+                          <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 2}}>{nextExercise!.problem}</Text>
+                          <View style={{alignItems: 'center', flexDirection: "row", marginTop: 15, gap: 5}}>
+                            <Image source={ICONS.time} style={{aspectRatio: 1, resizeMode: "contain", width: 35, height: 35}}/>
+                            <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>12 min</Text>
+                          </View>
+                        </View>
+                        <Image source={require('../../assets/images/training_home.png')}/>
+                      </View>
+                      <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity
+                          style={styles.button}
+                          onPress={() => navigation.navigate("Exercise" as never, { prescriptionItemId: nextExercise!.prescriptionItemId } as never)}
+                        >
+                          <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold, fontSize: 15}}>Iniciar Exercício</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                    <View style={{alignItems: 'center'}}>
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => home?.nextExercise && navigation.navigate("Exercise" as never, { prescriptionItemId: home.nextExercise.prescriptionItemId } as never)}
-                        disabled={!home?.nextExercise}
-                      >
-                        <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold, fontSize: 15}}>Iniciar Exercício</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                  )}
                 </ImageBackground>
                 <View style={styles.container}>
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Seu progresso</Text>
