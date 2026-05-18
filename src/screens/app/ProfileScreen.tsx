@@ -22,6 +22,7 @@ import {
 } from "react-native";
 import styles from "../../styles/profileScreen.style";
 import {useProfileViewModel} from "../../viewmodels/useProfileViewModel";
+import {AppFooter} from "../../components/AppFooter";
 
 export function ProfileScreen() {
     const navigation = useNavigation<any>();
@@ -37,6 +38,7 @@ export function ProfileScreen() {
     const [modalMessage, setModalMessage] = useState("");
     const { profileData, loading, error } = useProfileViewModel();
     const weeklyProgress = profileData?.weeklyProgress?.percentCompleted ?? 0;
+    const handleGoBack = () => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
     async function handleLogout() {
         await setUser(null);
@@ -54,14 +56,14 @@ export function ProfileScreen() {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 110 }}
                 keyboardShouldPersistTaps="handled"
             >
               <View>
                 <ImageBackground source={require('../../assets/images/header_profile.png')} style={{width: "100%", aspectRatio: 0.88}} resizeMode="contain">
                   <View style={styles.header}>
                     <View style={styles.headerTop}>
-                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.navigate("Home" as never)}>
+                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={handleGoBack}>
                         <Image source={ICONS.light_back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                       </TouchableOpacity>
@@ -144,24 +146,6 @@ export function ProfileScreen() {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Home")}>
-                  <Image source={ICONS.home} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Início</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Schedule" as never)}>
-                  <Image source={ICONS.schedule} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Agenda</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Progress" as never)}>
-                  <Image source={ICONS.progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Progresso</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Profile")}>
-                  <Image source={ICONS.profile} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>Perfil</Text>
-                </TouchableOpacity>
-              </View>
               <Modal visible={modalVisible} animationType="slide" transparent={true}>
                 <View style={styles.backgroundModal}>
                     <View style={styles.modal}>
@@ -175,6 +159,7 @@ export function ProfileScreen() {
             </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
+        <AppFooter currentRoute="Profile" />
       </SafeAreaView>
     );
 }

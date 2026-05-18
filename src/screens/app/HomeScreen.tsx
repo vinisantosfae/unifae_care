@@ -23,6 +23,7 @@ import {
 } from "react-native";
 import styles from "../../styles/homeScreen.style";
 import {useHomeViewModel} from "../../viewmodels/useHomeViewModel";
+import {AppFooter} from "../../components/AppFooter";
 
 export function HomeScreen() {
     const navigation = useNavigation<any>();
@@ -109,7 +110,7 @@ export function HomeScreen() {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 110 }}
                 keyboardShouldPersistTaps="handled"
             >
               <View style={styles.header}>
@@ -213,28 +214,6 @@ export function HomeScreen() {
                   </View>
                 </View>
               </View>
-              <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerItemChecked} onPress={() => navigation.navigate("Home")}>
-                  <Image source={ICONS.home} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Início</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Schedule" as never)}>
-                  <Image source={ICONS.schedule} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Agenda</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Exercises" as never)}>
-                  <Image source={ICONS.exercises} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Exercícios</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Progress" as never)}>
-                  <Image source={ICONS.progress} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Progresso</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Profile")}>
-                  <Image source={ICONS.profile} style={{aspectRatio: 1, resizeMode: "contain", width: 45, height: 45}}/>
-                  <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase", fontSize: 10}}>Perfil</Text>
-                </TouchableOpacity>
-              </View>
               <Modal visible={modalVisible} animationType="slide" transparent={true}>
                 <View style={styles.backgroundModal}>
                   <View style={styles.modal}>
@@ -248,6 +227,7 @@ export function HomeScreen() {
             </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
+        <AppFooter currentRoute="Home" />
       </SafeAreaView>
     );
 }

@@ -1,7 +1,14 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {clearAppId, setAppId} from "../services/app_config";
-import {clearSessionData, clearUserToken, setSessionData, setUserToken} from "../services/session";
+import {
+    clearSessionData,
+    clearUnauthorizedHandler,
+    clearUserToken,
+    setSessionData,
+    setUnauthorizedHandler,
+    setUserToken,
+} from "../services/session";
 
 const SESSION_KEY = "@UNIFAE_CARE_session";
 
@@ -72,6 +79,12 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         loadLoggedUser();
     }, []);
+
+    useEffect(() => {
+        setUnauthorizedHandler(() => setSession(null));
+
+        return () => clearUnauthorizedHandler();
+    }, [session]);
 
     return (
         <AuthContext.Provider value={{ user, session, setSession, setUser, loading }}>

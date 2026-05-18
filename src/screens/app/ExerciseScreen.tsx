@@ -26,6 +26,7 @@ export function ExerciseScreen() {
     const route = useRoute<any>();
     const [progress, setProgress] = useState(0)
     const { exercise, loading, error, submitting, concludeExercise } = useExerciseViewModel(route.params?.prescriptionItemId);
+    const handleGoBack = () => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
     const ProgressCircle = () => {
       const size = 100;
@@ -122,7 +123,7 @@ export function ExerciseScreen() {
                 <ImageBackground source={require('../../assets/images/header_home.png')} style={{width: "100%"}}>
                   <View style={styles.header}>
                     <View style={styles.headerTop}>
-                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.navigate("Home" as never)}>
+                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={handleGoBack}>
                         <Image source={ICONS.light_back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                       </TouchableOpacity>

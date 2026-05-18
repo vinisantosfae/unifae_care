@@ -5,15 +5,17 @@ import { COLORS } from '../../themes/colors';
 import { FONTS } from '../../themes/fonts';
 import { ICONS } from '../../themes/icons';
 import { useExercisesViewModel } from '../../viewmodels/useExercisesViewModel';
+import { AppFooter } from '../../components/AppFooter';
 
 export function ExercisesScreen() {
   const navigation = useNavigation<any>();
   const { exercises, loading, error } = useExercisesViewModel();
+  const handleGoBack = () => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('Home');
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }}>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }} onPress={() => navigation.navigate('Home' as never)}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 110, flexGrow: 1 }}>
+        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }} onPress={handleGoBack}>
           <Image source={ICONS.back} style={{ aspectRatio: 1, resizeMode: 'contain', width: 27, height: 27 }} />
           <Text style={{ color: COLORS.text.primary, textTransform: 'uppercase', fontFamily: FONTS.main_semiBold }}>Voltar</Text>
         </TouchableOpacity>
@@ -37,6 +39,7 @@ export function ExercisesScreen() {
           ))}
         </View>
       </ScrollView>
+      <AppFooter currentRoute="Exercises" />
     </SafeAreaView>
   );
 }

@@ -32,6 +32,7 @@ export function FeedbackScreen() {
       success,
       saveFeedback,
     } = useFeedbackViewModel(route.params?.executionId);
+    const handleGoBack = () => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
     const feedbackLevels = [
       {
@@ -89,7 +90,7 @@ export function FeedbackScreen() {
                 <ImageBackground source={require('../../assets/images/header_feedback.png')} style={{width: "100%"}}>
                   <View style={styles.header}>
                     <View style={styles.headerTop}>
-                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={() => navigation.navigate("Home" as never)}>
+                      <TouchableOpacity style={{flexDirection: "row", alignItems: "center", gap: 5}} onPress={handleGoBack}>
                         <Image source={ICONS.light_back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                       </TouchableOpacity>
@@ -111,7 +112,7 @@ export function FeedbackScreen() {
               <View style={styles.body}>
                 {
                   feedbackLevels.map(level => (
-                    <View>
+                    <View key={level.level}>
                       <TouchableOpacity style={level.level == feedbackLevel ? styles.checkedFeedbackLevel : styles.feedbackLevel} onPress={() => setFeedbackLevel(level.level)}>
                         <Image source={level.image} style={{aspectRatio: 1, resizeMode: "contain", height: 70, width: 65}}/>
                         <View style={{alignItems: "center", flex: 1, justifyContent: "center"}}>
