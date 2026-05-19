@@ -48,6 +48,15 @@ Desenvolvedores: Maria Luiza Nery Pinto, Vinícius Mendes Santos e Maria Eduarda
   </tr>
 </table>
 
+### 👤 Exercícios/Feedback
+<table>
+  <tr>
+    <td><img width="260" height="662" alt="image" src="https://github.com/user-attachments/assets/e85d16ad-39ca-4183-8eb4-d25b6529bb57" />
+</td>
+  </tr>
+</table>
+
+
 
 ## ▶️ Como rodar?
 
