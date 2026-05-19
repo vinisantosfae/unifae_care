@@ -25,7 +25,7 @@ import styles from "../../styles/loginScreen.style";
 
 export function LoginScreen() {
     const navigation = useNavigation();
-    const { setUser } = useAuthContext();
+    const { setSession } = useAuthContext();
 
     const [userType, setUserType] = useState("patient");
     const {
@@ -38,8 +38,8 @@ export function LoginScreen() {
       login,
       resetFeedback,
     } = useLoginViewModel({
-      onSuccess: async (user) => {
-        await setUser(user);
+      onSuccess: async (session) => {
+        await setSession(session);
       }
     });
 
@@ -58,7 +58,7 @@ export function LoginScreen() {
     async function handleLogin() {
       const result = await login();
 
-      if (!result.user) {
+      if (!result.session) {
         setModalMessage(result.errorMessage ?? "Não foi possivel realizar o login.");
         setModalVisible(true);
         return;

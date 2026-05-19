@@ -14,10 +14,14 @@ export const ICONS = {
     home: require("../assets/icons/home_icon.png"),
     notifications: require("../assets/icons/notifications_icon.png"),
     profile: require("../assets/icons/profile_icon.png"),
-    weekly_goal: require("../assets/icons/weekly_goal_icon.png"),
+    weekly_goal_progress: require("../assets/icons/weekly_goal_progress_icon.png"),
     progress: require("../assets/icons/progress_icon.png"),
     schedule: require("../assets/icons/schedule_icon.png"),
     user_image: require("../assets/icons/user_image.png"),
     time: require("../assets/icons/time_icon.png"),
-    exercises: require("../assets/icons/exercises_icon.png")
+    exercises: require("../assets/icons/exercises_icon.png"),
+    weekly_goal: require("../assets/icons/weekly_goal_icon.png"),
+    repetitions: require("../assets/icons/repetitions_icon.png"),
+    series: require("../assets/icons/series_icon.png"),
+    exercises: require("../assets/icons/exercises_icon.png"),
 }

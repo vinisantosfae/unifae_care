@@ -1,5 +1,5 @@
 import {getBaseURL} from "./config";
-import {getUserToken} from "../services/session";
+import {getUserToken, handleUnauthorized} from "../services/session";
 import axios from "axios";
 
 export async function api() {
@@ -15,7 +15,7 @@ export async function api() {
         responseType: "json",
     });
 
-    client.interceptors.response.use(
+    client.interceptors.request.use(
         async (config) => {
             const token = getUserToken();
 
@@ -25,13 +25,18 @@ export async function api() {
 
             return config;
         }
-    )
+    );
 
     client.interceptors.response.use(
         (response) => {
             return response;
         },
         async error => {
+            if (error.response?.status === 401) {
+                handleUnauthorized();
+                return Promise.reject(error);
+            }
+
             console.log('ERROR: ', error);
 
             return Promise.reject(error);
