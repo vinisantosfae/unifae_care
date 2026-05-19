@@ -153,7 +153,7 @@ export function ExerciseScreen() {
               </View>
               <View style={styles.body}>
                 <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                  <View style={[styles.container, styles.metrics]}>
+                  <View style={styles.metrics}>
                     <Text style={{textTransform: "uppercase", color: COLORS.text.primary, fontFamily: FONTS.main_regular}}>Séries</Text>
                     <View style={{marginTop: 10, flexDirection: "row", gap: 5, alignItems: "center"}}>
                       <Image source={ICONS.series} style={{aspectRatio: 1, resizeMode: "contain", width: 20, height: 20}}/>
@@ -161,7 +161,7 @@ export function ExerciseScreen() {
                     </View>
                     <Text style={{fontSize: 12, fontFamily: FONTS.main_regular, color: COLORS.text.primary, marginTop: 8}}>unidades</Text>
                   </View>
-                  <View style={[styles.container, styles.metrics]}>
+                  <View style={styles.metrics}>
                     <Text style={{textTransform: "uppercase", color: COLORS.text.primary, fontFamily: FONTS.main_regular}}>Repetições</Text>
                     <View style={{marginTop: 10, flexDirection: "row", gap: 5, alignItems: "center"}}>
                       <Image source={ICONS.repetitions} style={{aspectRatio: 1, resizeMode: "contain", width: 20, height: 20}}/>
@@ -169,7 +169,7 @@ export function ExerciseScreen() {
                     </View>
                     <Text style={{fontSize: 12, fontFamily: FONTS.main_regular, color: COLORS.text.primary, marginTop: 8}}>por série</Text>
                   </View>
-                  <View style={[styles.container, styles.metrics]}>
+                  <View style={styles.metrics}>
                     <Text style={{textTransform: "uppercase", color: COLORS.text.primary, fontFamily: FONTS.main_regular, textAlign: "center"}}>Meta Semanal</Text>
                     <View style={{marginTop: 10, flexDirection: "row", gap: 5, alignItems: "center"}}>
                       <Image source={ICONS.weekly_goal} style={{aspectRatio: 1, resizeMode: "contain", width: 20, height: 20}}/>
@@ -210,9 +210,9 @@ export function ExerciseScreen() {
                   <View style={{borderColor: COLORS.primary, borderWidth: 1, borderRadius: 15, width: 60, height: 60, justifyContent: "center", alignItems: "center"}}>
                       <Image source={ICONS.user_image} style={{aspectRatio: 1, resizeMode: "contain", width: 35, height: 35}}/>
                   </View>
-                  <View>
-                    <Text>Dica do fisioterapeuta</Text>
-                    <Text>{exercise.physiotherapistNotes || "Nenhuma observação adicional cadastrada."}</Text>
+                  <View style={{flex: 1, justifyContent: "center"}}>
+                    <Text style={{color: COLORS.primary, textAlign: "center", fontSize: 16, fontFamily: FONTS.main_semiBold}}>Dica do fisioterapeuta</Text>
+                    <Text style={{fontStyle: 'italic', textAlign: "center", marginTop: 5, fontFamily: FONTS.main_regular}}>"{exercise.physiotherapistNotes || "Nenhuma observação adicional cadastrada."}"</Text>
                   </View>
                 </View>
               </View>

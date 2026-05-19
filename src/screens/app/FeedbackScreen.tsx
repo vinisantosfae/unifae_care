@@ -106,7 +106,7 @@ export function FeedbackScreen() {
                     <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 10, color: COLORS.text.light}}>Sessão finalizada</Text>
                   </View>
                   <Text style={{fontSize: 22, fontFamily: FONTS.main_bold, textAlign: "center", marginTop: 7}}>Como você se sente?</Text>
-                  <Text style={{marginTop: 5, textAlign: "center", fontSize: 13, fontFamily: FONTS.main_regular}}>Avalie seu nível de dor e esforço após o exercício para que possamos ajustar seu plano.</Text>
+                  <Text style={{marginTop: 5, textAlign: "center", fontSize: 12, fontFamily: FONTS.main_regular}}>Avalie seu nível de dor e esforço após o exercício para que possamos ajustar seu plano.</Text>
                 </View>
               </View>
               <View style={styles.body}>

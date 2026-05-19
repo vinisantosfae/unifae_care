@@ -65,12 +65,10 @@ const styles = StyleSheet.create({
     marginTop: 55,
     padding: 15,
     shadowColor: COLORS.primary,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
     shadowOpacity: 0.40,
     shadowRadius: 15,
     borderRadius: 15,
-    backgroundColor: "#99CFB130",
+    backgroundColor: '#EEF3EF'
   },
   endSession: {
     backgroundColor: COLORS.primary,
