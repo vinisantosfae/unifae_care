@@ -35,7 +35,7 @@ function WeeklyGoalCard({ weeklyProgress }: { weeklyProgress: number }) {
             <View style={styles.progressTrack}>
                 <View style={[styles.progressFill, { width: `${weeklyProgress}%` as any }]}>
                     <View style={styles.runnerWrapper}>
-                        <Text style={styles.runnerEmoji}>🏃</Text>
+                        <Text style={styles.runnerEmoji}>🏃🏼‍➡️</Text>
                     </View>
                 </View>
             </View>
