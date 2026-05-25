@@ -59,7 +59,7 @@ const SESSIONS = [
     },
     {
         id: 3,
-        date: "Sex, 29 Jun",
+        date: "Sex, 29 MAI",
         time: "10:00",
         duration: "50 min",
         type: "Fisioterapia",
