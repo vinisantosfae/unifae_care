@@ -1,142 +1,437 @@
-import { StyleSheet } from "react-native";
-import {COLORS} from "../themes/colors";
 import {FONTS} from "../themes/fonts";
+import { StyleSheet } from "react-native";
+
+const PRIMARY = "#2E8B62";
+const PRIMARY_LIGHT = "#349064BD";
+const LIGHT = "#FFFFFF";
 
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 10
+  headerContainer: {
+    backgroundColor: PRIMARY,
+    width: "100%",
+    paddingBottom: 0,
   },
   headerTop: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 12,
   },
-  body: {
-    flex: 1,
-    marginTop: 25
-  },
-  responsibles: {
-    paddingHorizontal: 20,
-    width: "100%"
-  },
-  responsible: {
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-    width: "100%",
-    padding: 15,
-    borderRadius: 15,
-    backgroundColor: "#D7EADE36"
-  },
-  responsiblesInfo: {
-    width: "100%",
-    marginTop: 15,
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "center"
-  },
-  weeklyGoal: {
-    marginTop: 60,
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    width: "100%",
-    alignItems: "center"
-  },
-  bar: {
-    marginTop: 25,
-    width: "100%",
-    height: 10,
-    backgroundColor: "#D7EADEAB",
-    borderRadius: 10
-  },
-  progressBar: {
-    width: "67%",
-    height: 10,
-    backgroundColor: COLORS.light,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "flex-end"
-  },
-  configAndSupport: {
-    marginTop: 60,
-    paddingHorizontal: 20,
-  },
-  configs: {
-    marginTop: 23,
-    gap: 10
-  },
-  config: {
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-    width: "100%",
-    padding: 13,
-    borderRadius: 25,
+  backButton: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    gap: 6,
+  },
+  backText: {
+    color: LIGHT,
+    textTransform: "uppercase",
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 13,
+  },
+  appTitle: {
+    color: LIGHT,
+    fontFamily: FONTS.main_bold,
+    fontSize: 20,
+    textTransform: "uppercase",
+  },
+  avatarSection: {
+    alignItems: "center",
+    marginTop: 10,
+  },
+  profileName: {
+    color: LIGHT,
+    fontFamily: FONTS.main_bold,
+    fontSize: 20,
+    textTransform: "uppercase",
+    marginTop: 6,
+  },
+  profileId: {
+    color: LIGHT,
+    fontFamily: FONTS.main_light,
+    fontSize: 13,
+    marginTop: 2,
+  },
+  tabBar: {
+    flexDirection: "row",
+    marginTop: 18,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.25)",
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  tabLabel: {
+    color: "rgba(255,255,255,0.6)",
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 13,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  tabLabelActive: {
+    color: LIGHT,
+  },
+  tabIndicator: {
+    position: "absolute",
+    bottom: 0,
+    height: 3,
+    width: "60%",
+    backgroundColor: LIGHT,
+    borderRadius: 2,
+  },
+  tabContent: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  card: {
+    backgroundColor: LIGHT,
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontFamily: FONTS.main_bold,
+    fontSize: 14,
+    color: "#333",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#E8E8E8",
+    marginVertical: 10,
+  },
+  clinicalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  clinicalLabel: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 14,
+    color: "#555",
+  },
+  clinicalValue: {
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 14,
+    color: "#333",
+  },
+  diagRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  diagText: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 14,
+    color: "#333",
+    flex: 1,
+  },
+  badge: {
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  badgeText: {
+    color: LIGHT,
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 11,
+  },
+  painRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 4,
+  },
+  painCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  painNumber: {
+    fontSize: 11,
+    fontFamily: FONTS.main_semiBold,
+  },
+  painLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 6,
+  },
+  painLabel: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 11,
+    color: "#999",
+  },
+  weeklyGoalCard: {
+    backgroundColor: PRIMARY,
+    borderRadius: 12,
+    padding: 16,
+  },
+  weeklyTitle: {
+    color: LIGHT,
+    fontFamily: FONTS.main_bold,
+    fontSize: 14,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  weeklyRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 6,
+    marginTop: 8,
+  },
+  weeklyPercent: {
+    fontSize: 30,
+    fontFamily: FONTS.main_bold,
+    color: LIGHT,
+  },
+  weeklyLabel: {
+    fontFamily: FONTS.main_regular,
+    color: LIGHT,
+    marginBottom: 4,
+    fontSize: 15,
+  },
+  progressTrack: {
+    height: 14,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    borderRadius: 7,
+    marginTop: 16,
+    overflow: "visible",
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: LIGHT,
+    borderRadius: 7,
+    position: "relative",
+  },
+  runnerWrapper: {
+    position: "absolute",
+    right: -18,
+    top: -14,
+  },
+  runnerEmoji: {
+    fontSize: 28,
+  },
+  bodyFigure: {
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  bodyHead: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#B0CFBE",
+  },
+  bodyNeck: {
+    width: 16,
+    height: 10,
+    backgroundColor: "#B0CFBE",
+  },
+  bodyTorsoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bodyArm: {
+    width: 14,
+    height: 60,
+    backgroundColor: "#B0CFBE",
+    borderRadius: 7,
+  },
+  bodyTorso: {
+    width: 50,
+    height: 70,
+    backgroundColor: "#B0CFBE",
+    borderRadius: 6,
+    marginHorizontal: 4,
+  },
+  bodyHips: {
+    width: 58,
+    height: 18,
+    backgroundColor: "#B0CFBE",
+    borderRadius: 4,
+    marginTop: 2,
+  },
+  bodyLegsRow: {
+    flexDirection: "row",
+    marginTop: 4,
+  },
+  bodyLeg: {
+    width: 24,
+    height: 70,
+    backgroundColor: "#B0CFBE",
+    borderRadius: 10,
+  },
+  responsibleLabel: {
+    textTransform: "uppercase",
+    color: PRIMARY_LIGHT,
+    fontFamily: FONTS.main_semiBold,
+    letterSpacing: 1,
+    fontSize: 11,
+  },
+  responsibleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    marginTop: 10,
+  },
+  avatarBox: {
+    backgroundColor: PRIMARY,
+    width: 52,
+    height: 52,
+    borderRadius: 12,
+  },
+  responsibleName: {
+    color: "#333",
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 15,
+  },
+  responsibleSpecialty: {
+    color: PRIMARY_LIGHT,
+    fontFamily: FONTS.main_regular,
+    fontSize: 13,
+    marginTop: 2,
+  },
+  chartHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  chartSubtitle: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 12,
+    color: "#999",
+  },
+  barChart: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    marginTop: 16,
+    height: 130,
+  },
+  barWrapper: {
+    flex: 1,
+    alignItems: "center",
+    gap: 4,
+    height: "100%",
+    justifyContent: "flex-end",
+  },
+  barTrack: {
+    width: 28,
+    height: 110,
+    backgroundColor: "#E8F5EE",
+    borderRadius: 6,
+    overflow: "hidden",
+    justifyContent: "flex-end",
+  },
+  barFill: {
+    width: "100%",
+    backgroundColor: PRIMARY,
+    borderRadius: 6,
+  },
+  barLabel: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 11,
+    color: "#999",
+  },
+  evolutionDate: {
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 13,
+    color: "#555",
+    marginBottom: 6,
+  },
+  evolutionText: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 13,
+    color: "#666",
+    lineHeight: 20,
+  },
+  evolutionAuthor: {
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 13,
+    color: PRIMARY,
+    marginTop: 8,
+    textAlign: "right",
+  },
+  areaImageBox: {
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  sectionTitle: {
+    color: "#333",
+    fontFamily: FONTS.main_bold,
+    fontSize: 16,
+    textTransform: "uppercase",
+    marginBottom: 4,
+  },
+  settingRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  settingLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  settingLabel: {
+    fontFamily: FONTS.main_regular,
+    fontSize: 16,
+    color: "#333",
+  },
+  signOutButton: {
+    marginTop: 24,
+    backgroundColor: "#FFE8E8",
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  signOutText: {
+    fontFamily: FONTS.main_semiBold,
+    fontSize: 16,
+    textTransform: "uppercase",
+    color: "#E53935",
+    letterSpacing: 1,
   },
   backgroundModal: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)'
-  },
-  signOut: {
-    width: "70%",
-    borderWidth: 1,
-    borderColor: COLORS.text.status.error,
-    backgroundColor: "#FF70704A",
-    borderRadius: 30,
-    padding: 15,
-    marginTop: 35,
-    alignItems: "center"
-  },
-  footer: {
-    marginTop: 70,
-    backgroundColor: "#34906494",
-    paddingHorizontal: 5,
-    paddingVertical: 10,
-    flexDirection: "row",
-    gap: 5,
-    justifyContent: "space-center",
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25
-  },
-  footerItem: {
+    justifyContent: "center",
     alignItems: "center",
-    gap: 2,
-    flex: 1,
-    borderRadius: 25,
-    padding: 5
-  },
-  footerItemChecked: {
-    alignItems: "center",
-    gap: 2,
-    flex: 1,
-    backgroundColor: COLORS.footer.primary,
-    borderRadius: 25,
-    padding: 5
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modal: {
-    width: '70%',
-    backgroundColor: 'white',
+    backgroundColor: LIGHT,
+    borderRadius: 16,
     padding: 24,
-    borderRadius: 8,
-    alignItems: 'center'
+    width: "80%",
+    alignItems: "center",
   },
   modalMessage: {
+    fontFamily: FONTS.main_regular,
     fontSize: 16,
-    textAlign: 'center'
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 16,
   },
   modalButton: {
-    borderColor: COLORS.primary,
-    borderWidth: 1,
-    paddingVertical: 10,
     paddingHorizontal: 32,
+    paddingVertical: 10,
+    backgroundColor: "#E8F5EE",
     borderRadius: 8,
-    marginTop: 30,
-    alignItems: 'center'
-  }
+  },
 });
 
 export default styles;
