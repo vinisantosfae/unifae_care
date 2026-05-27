@@ -52,6 +52,33 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 2,
   },
+  profilePhotoButton: {
+    width: 124,
+    height: 124,
+    borderRadius: 62,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.18)",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.45)",
+  },
+  profilePhoto: {
+    width: 124,
+    height: 124,
+    resizeMode: "cover",
+  },
+  profileIcon: {
+    width: 110,
+    height: 110,
+    resizeMode: "contain",
+  },
+  changePhotoText: {
+    color: "rgba(255,255,255,0.85)",
+    fontFamily: FONTS.main_regular,
+    fontSize: 12,
+    marginTop: 6,
+  },
   tabBar: {
     flexDirection: "row",
     marginTop: 18,
@@ -289,6 +316,13 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 12,
+  },
+  responsibleAvatarImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 12,
+    resizeMode: "cover",
+    backgroundColor: PRIMARY,
   },
   responsibleName: {
     color: "#333",

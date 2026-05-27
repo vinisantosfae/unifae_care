@@ -53,7 +53,16 @@ export function ProfileScreen() {
     const [activeTab, setActiveTab] = useState<Tab>("resumo");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
-    const { profileData, loading, error } = useProfileViewModel();
+    const {
+        profileData,
+        profilePhotoSource,
+        coordinatorPhotoSource,
+        responsibleStudentPhotoSource,
+        loading,
+        uploadingPhoto,
+        error,
+        pickAndUploadProfilePhoto,
+    } = useProfileViewModel();
 
     const weeklyProgress = profileData?.weeklyProgress?.percentCompleted ?? 67;
 
@@ -66,6 +75,15 @@ export function ProfileScreen() {
 
     function handleCloseModal() {
         setModalVisible(false);
+    }
+
+    async function handleProfilePhotoPress() {
+        const result = await pickAndUploadProfilePhoto();
+
+        if (result?.message) {
+            setModalMessage(result.message);
+            setModalVisible(true);
+        }
     }
 
     const painColors: Record<number, string> = {
@@ -154,7 +172,11 @@ export function ProfileScreen() {
             <View style={[styles.card, { marginTop: 12 }]}>
                 <Text style={styles.responsibleLabel}>Fisioterapeuta Responsável</Text>
                 <View style={styles.responsibleRow}>
-                    <View style={styles.avatarBox} />
+                    {responsibleStudentPhotoSource ? (
+                        <Image source={responsibleStudentPhotoSource} style={styles.responsibleAvatarImage} />
+                    ) : (
+                        <View style={styles.avatarBox} />
+                    )}
                     <View>
                         <Text style={styles.responsibleName}>
                             {profileData?.responsibleStudent?.name ?? "Dr. Sarah Chen"}
@@ -169,7 +191,11 @@ export function ProfileScreen() {
             <View style={[styles.card, { marginTop: 12 }]}>
                 <Text style={styles.responsibleLabel}>Coordenador Responsável</Text>
                 <View style={styles.responsibleRow}>
-                    <View style={styles.avatarBox} />
+                    {coordinatorPhotoSource ? (
+                        <Image source={coordinatorPhotoSource} style={styles.responsibleAvatarImage} />
+                    ) : (
+                        <View style={styles.avatarBox} />
+                    )}
                     <View>
                         <Text style={styles.responsibleName}>
                             {profileData?.coordinator?.name ?? "Dr. Vanessa"}
@@ -314,10 +340,19 @@ export function ProfileScreen() {
                             </View>
 
                             <View style={styles.avatarSection}>
-                                <Image
-                                    source={ICONS.user_image}
-                                    style={{ width: 120, height: 120, resizeMode: "contain" }}
-                                />
+                                <TouchableOpacity
+                                    onPress={handleProfilePhotoPress}
+                                    disabled={uploadingPhoto}
+                                    style={styles.profilePhotoButton}
+                                >
+                                    <Image
+                                        source={profilePhotoSource ?? ICONS.user_image}
+                                        style={profilePhotoSource ? styles.profilePhoto : styles.profileIcon}
+                                    />
+                                </TouchableOpacity>
+                                <Text style={styles.changePhotoText}>
+                                    {uploadingPhoto ? "Enviando foto..." : "Toque para alterar a foto"}
+                                </Text>
                                 <Text style={styles.profileName}>
                                     {profileData?.profile.name ?? user?.name ?? "Cristiane Imamura"}
                                 </Text>

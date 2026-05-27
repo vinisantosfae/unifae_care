@@ -49,6 +49,28 @@ export interface HomeSnapshot {
   } | null;
 }
 
+export type PainLevel = 'NONE' | 'MILD' | 'SEVERE';
+
+export interface MotivationResponse {
+  id: number;
+  message: string;
+}
+
+export interface ProfilePhotoResponse {
+  message: string;
+  photoUrl: string;
+}
+
+export interface ExerciseExecution {
+  completed: boolean;
+  executionId: number | null;
+  performedAt: string | null;
+  feedbackSubmitted: boolean;
+  feedbackScore: number | null;
+  feedbackRecordedAt: string | null;
+  feedbackPending: boolean;
+}
+
 export interface ExerciseListItem {
   prescriptionItemId: number;
   exerciseId: number;
@@ -79,6 +101,49 @@ export interface ExerciseDetail extends Omit<ExerciseListItem, 'completedToday'>
   physiotherapistNotes: string;
 }
 
+export interface PlanWeekExercise extends ExerciseDetail {
+  steps: Array<{
+    order: number;
+    text: string;
+  }>;
+  execution: ExerciseExecution;
+}
+
+export interface PlanWeekAppointment {
+  id?: number;
+  startsAt?: string;
+  endsAt?: string;
+  time?: string;
+  duration?: string;
+  type?: string;
+  title?: string;
+  professional?: string;
+  location?: string;
+  status?: string;
+}
+
+export interface PlanWeekDay {
+  date: string;
+  label: string;
+  isToday: boolean;
+  summary: {
+    total: number;
+    completed: number;
+    pendingFeedback: number;
+    percentCompleted: number;
+  };
+  exercises: PlanWeekExercise[];
+  appointments: PlanWeekAppointment[];
+}
+
+export interface PlanWeekResponse {
+  today: string;
+  weekStart: string;
+  weekEnd: string;
+  prescriptionId: number;
+  days: PlanWeekDay[];
+}
+
 export interface ExerciseCompletion {
   executionId: number;
   prescriptionId: number;
@@ -95,6 +160,14 @@ export interface ProfileResponse {
     email: string;
     role: string;
     photoUrl: string | null;
+  };
+  app?: {
+    id: number;
+    name: string;
+  };
+  course?: {
+    id: number;
+    name: string;
   };
   responsibleStudent?: {
     id: number;

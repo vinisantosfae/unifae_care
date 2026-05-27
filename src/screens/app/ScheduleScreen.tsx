@@ -1,5 +1,4 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
 import { ICONS } from "../../themes/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -12,10 +11,11 @@ import {
     Keyboard,
     Image,
     TouchableOpacity,
-    StyleSheet,
 } from "react-native";
 import { AppFooter } from "../../components/AppFooter";
 import styles from "../../styles/scheduleScreen.style";
+import { useScheduleViewModel } from "../../viewmodels/useScheduleViewModel";
+import { PlanWeekAppointment, PlanWeekExercise } from "../../models/Api";
 
 function SectionHeader({ title }: { title: string }) {
     return (
@@ -27,117 +27,75 @@ function SectionHeader({ title }: { title: string }) {
 }
 
 const PRIMARY = "#2E8B62";
-
-const DAYS_OF_WEEK = ["D", "S", "T", "Q", "Q", "S", "S"];
 const MONTHS = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
     "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
 
-const today = new Date();
-
-const SESSIONS = [
-    {
-        id: 1,
-        date: "Hoje",
-        time: "09:00",
-        duration: "50 min",
-        type: "Fisioterapia",
-        professional: "Dra. Sarah Chen",
-        status: "confirmado",
-        location: "Sala 3 – Clínica UniFAE",
-    },
-    {
-        id: 2,
-        date: "Amanhã",
-        time: "14:30",
-        duration: "50 min",
-        type: "Avaliação Postural",
-        professional: "Dra. Sarah Chen",
-        status: "pendente",
-        location: "Sala 1 – Clínica UniFAE",
-    },
-    {
-        id: 3,
-        date: "Sex, 29 MAI",
-        time: "10:00",
-        duration: "50 min",
-        type: "Fisioterapia",
-        professional: "Dra. Sarah Chen",
-        status: "confirmado",
-        location: "Sala 3 – Clínica UniFAE",
-    },
-];
-
-const EXERCISES = [
-    { id: 1, name: "Alongamento Cervical", sets: "3x", reps: "30s", done: true },
-    { id: 2, name: "Fortalecimento Manguito", sets: "3x", reps: "12 rep", done: true },
-    { id: 3, name: "Mobilização Escapular", sets: "2x", reps: "15 rep", done: false },
-    { id: 4, name: "Exercício Pendular", sets: "3x", reps: "10 rep", done: false },
-];
-
-const HISTORY = [
-    {
-        id: 1,
-        date: "15 Jun 2025",
-        time: "09:00",
-        type: "Fisioterapia",
-        professional: "Dra. Sarah Chen",
-        note: "Boa evolução na amplitude de movimento.",
-    },
-    {
-        id: 2,
-        date: "08 Jun 2025",
-        time: "14:30",
-        type: "Avaliação",
-        professional: "Dr. Vanessa",
-        note: "Redução significativa da dor relatada.",
-    },
-    {
-        id: 3,
-        date: "01 Jun 2025",
-        time: "09:00",
-        type: "Fisioterapia",
-        professional: "Dra. Sarah Chen",
-        note: "Iniciou protocolo de fortalecimento.",
-    },
-];
-
-function getDaysInMonth(year: number, month: number) {
-    return new Date(year, month + 1, 0).getDate();
+function formatDisplayDate(date: string) {
+    const [year, month, day] = date.split("-").map(Number);
+    return `${day} de ${MONTHS[month - 1]} de ${year}`;
 }
 
-function getFirstDayOfMonth(year: number, month: number) {
-    return new Date(year, month, 1).getDay();
+function formatShortDate(date: string) {
+    const [year, month, day] = date.split("-").map(Number);
+    return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`;
+}
+
+function getAppointmentTitle(appointment: PlanWeekAppointment) {
+    return appointment.title ?? appointment.type ?? "Sessão agendada";
+}
+
+function getAppointmentTime(appointment: PlanWeekAppointment) {
+    if (appointment.time) {
+        return appointment.duration ? `${appointment.time} · ${appointment.duration}` : appointment.time;
+    }
+
+    if (!appointment.startsAt) {
+        return "Horário não informado";
+    }
+
+    const start = new Date(appointment.startsAt);
+    const end = appointment.endsAt ? new Date(appointment.endsAt) : null;
+    const startTime = start.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    const endTime = end?.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    return endTime ? `${startTime} · ${endTime}` : startTime;
+}
+
+function getExerciseStatus(exercise: PlanWeekExercise) {
+    if (exercise.execution.feedbackPending) {
+        return "Feedback pendente";
+    }
+
+    if (exercise.execution.completed) {
+        return exercise.execution.feedbackSubmitted ? "Concluído" : "Concluído sem feedback";
+    }
+
+    return "Pendente";
 }
 
 export function ScheduleScreen() {
     const navigation = useNavigation<any>();
-
-    const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-    const [currentYear, setCurrentYear] = useState(today.getFullYear());
-    const [selectedDay, setSelectedDay] = useState(today.getDate());
+    const { planWeek, selectedDay, selectedDate, setSelectedDate, loading, error } = useScheduleViewModel();
 
     const handleGoBack = () =>
         navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
-    const prevMonth = () => {
-        if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(y => y - 1); }
-        else setCurrentMonth(m => m - 1);
-    };
+    function handleExercisePress(exercise: PlanWeekExercise) {
+        if (exercise.execution.feedbackPending && exercise.execution.executionId) {
+            navigation.navigate("Feedback", { executionId: exercise.execution.executionId });
+            return;
+        }
 
-    const nextMonth = () => {
-        if (currentMonth === 11) { setCurrentMonth(0); setCurrentYear(y => y + 1); }
-        else setCurrentMonth(m => m + 1);
-    };
+        navigation.navigate("Exercise", { prescriptionItemId: exercise.prescriptionItemId });
+    }
 
-    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-    const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
-
-    const markedDays = new Set([today.getDate(), today.getDate() + 1, today.getDate() + 4]);
-
-    const exercisesDone = EXERCISES.filter(e => e.done).length;
-    const exercisesTotal = EXERCISES.length;
+    const selectedExercises = selectedDay?.exercises ?? [];
+    const selectedAppointments = selectedDay?.appointments ?? [];
+    const exercisesDone = selectedDay?.summary.completed ?? 0;
+    const exercisesTotal = selectedDay?.summary.total ?? 0;
+    const percentCompleted = selectedDay?.summary.percentCompleted ?? 0;
+    const headerDate = planWeek?.today ? formatDisplayDate(planWeek.today) : "";
 
     return (
         <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "#F5F7F5" }}>
@@ -162,7 +120,7 @@ export function ScheduleScreen() {
                             <View style={styles.headerBody}>
                                 <Text style={styles.headerTitle}>Minha Agenda</Text>
                                 <Text style={styles.headerSubtitle}>
-                                    {today.getDate()} de {MONTHS[today.getMonth()]} de {today.getFullYear()}
+                                    {headerDate || "Plano semanal"}
                                 </Text>
                             </View>
                         </View>
@@ -170,55 +128,40 @@ export function ScheduleScreen() {
                         <View style={styles.content}>
                             <View style={styles.card}>
                                 <View style={styles.calendarHeader}>
-                                    <TouchableOpacity onPress={prevMonth} style={styles.monthNavBtn}>
-                                        <Text style={styles.monthNavArrow}>‹</Text>
-                                    </TouchableOpacity>
                                     <Text style={styles.monthTitle}>
-                                        {MONTHS[currentMonth]} {currentYear}
+                                        {planWeek ? `${formatShortDate(planWeek.weekStart)} - ${formatShortDate(planWeek.weekEnd)}` : "Semana atual"}
                                     </Text>
-                                    <TouchableOpacity onPress={nextMonth} style={styles.monthNavBtn}>
-                                        <Text style={styles.monthNavArrow}>›</Text>
-                                    </TouchableOpacity>
                                 </View>
 
-                                <View style={styles.weekRow}>
-                                    {DAYS_OF_WEEK.map((d, i) => (
-                                        <Text key={i} style={styles.weekLabel}>{d}</Text>
-                                    ))}
-                                </View>
+                                {loading && <Text style={styles.exerciseMeta}>Carregando agenda...</Text>}
+                                {error && <Text style={{ color: "#E53935" }}>{error}</Text>}
 
                                 <View style={styles.calendarGrid}>
-                                    {Array.from({ length: firstDay }).map((_, i) => (
-                                        <View key={`empty-${i}`} style={styles.dayCell} />
-                                    ))}
-                                    {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                                        const isToday =
-                                            day === today.getDate() &&
-                                            currentMonth === today.getMonth() &&
-                                            currentYear === today.getFullYear();
-                                        const isSelected = day === selectedDay && currentMonth === today.getMonth();
-                                        const hasSession = markedDays.has(day);
+                                    {planWeek?.days.map((day) => {
+                                        const dayNumber = Number(day.date.split("-")[2]);
+                                        const isSelected = selectedDate === day.date;
+                                        const hasContent = day.summary.total > 0 || day.appointments.length > 0;
 
                                         return (
                                             <TouchableOpacity
-                                                key={day}
+                                                key={day.date}
                                                 style={styles.dayCell}
-                                                onPress={() => setSelectedDay(day)}
+                                                onPress={() => setSelectedDate(day.date)}
                                             >
                                                 <View style={[
                                                     styles.dayInner,
                                                     isSelected && styles.daySelected,
-                                                    isToday && !isSelected && styles.dayToday,
+                                                    day.isToday && !isSelected && styles.dayToday,
                                                 ]}>
                                                     <Text style={[
                                                         styles.dayText,
                                                         isSelected && styles.dayTextSelected,
-                                                        isToday && !isSelected && styles.dayTextToday,
+                                                        day.isToday && !isSelected && styles.dayTextToday,
                                                     ]}>
-                                                        {day}
+                                                        {dayNumber}
                                                     </Text>
                                                 </View>
-                                                {hasSession && (
+                                                {hasContent && (
                                                     <View style={[styles.dot, isSelected && styles.dotSelected]} />
                                                 )}
                                             </TouchableOpacity>
@@ -228,106 +171,110 @@ export function ScheduleScreen() {
                             </View>
 
                             <SectionHeader title="Sessões Agendadas" />
-                            {SESSIONS.map((session) => (
-                                <View key={session.id} style={[styles.card, styles.sessionCard]}>
-                                    <View style={[
-                                        styles.sessionStripe,
-                                        { backgroundColor: session.status === "confirmado" ? PRIMARY : "#FFA726" }
-                                    ]} />
-                                    <View style={styles.sessionBody}>
-                                        <View style={styles.sessionTop}>
-                                            <View>
-                                                <Text style={styles.sessionDate}>{session.date}</Text>
-                                                <Text style={styles.sessionType}>{session.type}</Text>
-                                            </View>
-                                            <View style={[
-                                                styles.sessionBadge,
-                                                { backgroundColor: session.status === "confirmado" ? "#E8F5EE" : "#FFF3E0" }
-                                            ]}>
-                                                <Text style={[
-                                                    styles.sessionBadgeText,
-                                                    { color: session.status === "confirmado" ? PRIMARY : "#E65100" }
+                            {selectedAppointments.length === 0 ? (
+                                <View style={styles.card}>
+                                    <Text style={styles.exerciseMeta}>Nenhuma sessão agendada para este dia.</Text>
+                                </View>
+                            ) : (
+                                selectedAppointments.map((appointment, index) => (
+                                    <View key={appointment.id ?? `${selectedDay?.date}-appointment-${index}`} style={[styles.card, styles.sessionCard]}>
+                                        <View style={[
+                                            styles.sessionStripe,
+                                            { backgroundColor: appointment.status === "pendente" ? "#FFA726" : PRIMARY }
+                                        ]} />
+                                        <View style={styles.sessionBody}>
+                                            <View style={styles.sessionTop}>
+                                                <View>
+                                                    <Text style={styles.sessionDate}>{selectedDay?.label}</Text>
+                                                    <Text style={styles.sessionType}>{getAppointmentTitle(appointment)}</Text>
+                                                </View>
+                                                <View style={[
+                                                    styles.sessionBadge,
+                                                    { backgroundColor: appointment.status === "pendente" ? "#FFF3E0" : "#E8F5EE" }
                                                 ]}>
-                                                    {session.status === "confirmado" ? "Confirmado" : "Pendente"}
-                                                </Text>
+                                                    <Text style={[
+                                                        styles.sessionBadgeText,
+                                                        { color: appointment.status === "pendente" ? "#E65100" : PRIMARY }
+                                                    ]}>
+                                                        {appointment.status ?? "Agendado"}
+                                                    </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                        <View style={styles.sessionDetails}>
-                                            <View style={styles.sessionDetailItem}>
-                                                <Text style={styles.sessionDetailIcon}>🕐</Text>
-                                                <Text style={styles.sessionDetailText}>{session.time} · {session.duration}</Text>
-                                            </View>
-                                            <View style={styles.sessionDetailItem}>
-                                                <Text style={styles.sessionDetailIcon}>👩‍⚕️</Text>
-                                                <Text style={styles.sessionDetailText}>{session.professional}</Text>
-                                            </View>
-                                            <View style={styles.sessionDetailItem}>
-                                                <Text style={styles.sessionDetailIcon}>📍</Text>
-                                                <Text style={styles.sessionDetailText}>{session.location}</Text>
+                                            <View style={styles.sessionDetails}>
+                                                <View style={styles.sessionDetailItem}>
+                                                    <Text style={styles.sessionDetailIcon}>•</Text>
+                                                    <Text style={styles.sessionDetailText}>{getAppointmentTime(appointment)}</Text>
+                                                </View>
+                                                <View style={styles.sessionDetailItem}>
+                                                    <Text style={styles.sessionDetailIcon}>•</Text>
+                                                    <Text style={styles.sessionDetailText}>{appointment.professional ?? "Profissional não informado"}</Text>
+                                                </View>
+                                                <View style={styles.sessionDetailItem}>
+                                                    <Text style={styles.sessionDetailIcon}>•</Text>
+                                                    <Text style={styles.sessionDetailText}>{appointment.location ?? "Local não informado"}</Text>
+                                                </View>
                                             </View>
                                         </View>
                                     </View>
-                                </View>
-                            ))}
+                                ))
+                            )}
 
-                            <SectionHeader title="Exercícios de Hoje" />
+                            <SectionHeader title="Exercícios do Dia" />
                             <View style={styles.card}>
                                 <View style={styles.exerciseProgressRow}>
                                     <Text style={styles.exerciseProgressLabel}>
                                         {exercisesDone}/{exercisesTotal} concluídos
                                     </Text>
                                     <Text style={styles.exerciseProgressPct}>
-                                        {Math.round((exercisesDone / exercisesTotal) * 100)}%
+                                        {percentCompleted}%
                                     </Text>
                                 </View>
                                 <View style={styles.exerciseTrack}>
                                     <View style={[
                                         styles.exerciseFill,
-                                        { width: `${(exercisesDone / exercisesTotal) * 100}%` as any }
+                                        { width: `${percentCompleted}%` as any }
                                     ]} />
                                 </View>
 
                                 <View style={{ marginTop: 14 }}>
-                                    {EXERCISES.map((ex, idx) => (
-                                        <View key={ex.id} style={[
-                                            styles.exerciseRow,
-                                            idx < EXERCISES.length - 1 && styles.exerciseRowBorder,
-                                        ]}>
-                                            <View style={[
-                                                styles.exerciseCheck,
-                                                ex.done && styles.exerciseCheckDone,
-                                            ]}>
-                                                {ex.done && <Text style={styles.checkMark}>✓</Text>}
-                                            </View>
-                                            <View style={{ flex: 1 }}>
-                                                <Text style={[
-                                                    styles.exerciseName,
-                                                    ex.done && styles.exerciseNameDone,
-                                                ]}>
-                                                    {ex.name}
-                                                </Text>
-                                                <Text style={styles.exerciseMeta}>{ex.sets} · {ex.reps}</Text>
-                                            </View>
-                                        </View>
-                                    ))}
+                                    {selectedExercises.length === 0 ? (
+                                        <Text style={styles.exerciseMeta}>Nenhum exercício previsto para este dia.</Text>
+                                    ) : (
+                                        selectedExercises.map((exercise, idx) => {
+                                            const completed = exercise.execution.completed && !exercise.execution.feedbackPending;
+
+                                            return (
+                                                <TouchableOpacity
+                                                    key={`${selectedDay?.date}-${exercise.prescriptionItemId}`}
+                                                    onPress={() => handleExercisePress(exercise)}
+                                                    style={[
+                                                        styles.exerciseRow,
+                                                        idx < selectedExercises.length - 1 && styles.exerciseRowBorder,
+                                                    ]}
+                                                >
+                                                    <View style={[
+                                                        styles.exerciseCheck,
+                                                        completed && styles.exerciseCheckDone,
+                                                    ]}>
+                                                        {completed && <Text style={styles.checkMark}>✓</Text>}
+                                                    </View>
+                                                    <View style={{ flex: 1 }}>
+                                                        <Text style={[
+                                                            styles.exerciseName,
+                                                            completed && styles.exerciseNameDone,
+                                                        ]}>
+                                                            {exercise.title}
+                                                        </Text>
+                                                        <Text style={styles.exerciseMeta}>
+                                                            {exercise.metrics.repetitionsRaw ?? exercise.metrics.volume ?? "Sem métricas"} · {getExerciseStatus(exercise)}
+                                                        </Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            );
+                                        })
+                                    )}
                                 </View>
                             </View>
-
-                            <SectionHeader title="Histórico de Atendimentos" />
-                            {HISTORY.map((item) => (
-                                <View key={item.id} style={[styles.card, { marginBottom: 10 }]}>
-                                    <View style={styles.historyTop}>
-                                        <View style={styles.historyDateBadge}>
-                                            <Text style={styles.historyDateText}>{item.date}</Text>
-                                        </View>
-                                        <Text style={styles.historyTime}>{item.time}</Text>
-                                    </View>
-                                    <Text style={styles.historyType}>{item.type}</Text>
-                                    <Text style={styles.historyProfessional}>{item.professional}</Text>
-                                    <View style={styles.historyDivider} />
-                                    <Text style={styles.historyNote}>{item.note}</Text>
-                                </View>
-                            ))}
                         </View>
                     </ScrollView>
                 </TouchableWithoutFeedback>
@@ -336,4 +283,3 @@ export function ScheduleScreen() {
         </SafeAreaView>
     );
 }
-

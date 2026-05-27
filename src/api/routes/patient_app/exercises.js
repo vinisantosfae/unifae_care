@@ -12,6 +12,17 @@ export async function getExercisesRoute(api, filter) {
 }
 
 /**
+ * Retorna plano semanal da prescriÃ§Ã£o ativa
+ * @params
+ * @return JSON
+ **/
+export async function planWeekRoute(api, filter) {
+    return api.get(ENDPOINTS.patient_app.planWeek, {
+        params: filter
+    });
+}
+
+/**
  * Detalha um exercício da prescrição ativa
  * @params prescriptionItem_id
  * @return JSON
