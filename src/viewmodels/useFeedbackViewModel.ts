@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PainLevel } from '../models/Api';
 import { submitDailyPain, submitExerciseFeedback } from '../services/patient_app';
 
@@ -20,6 +20,14 @@ export function useFeedbackViewModel(executionId?: number) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  function resetFeedbackForm() {
+    setObservations('');
+    setFeedbackLevel(null);
+    setLoading(false);
+    setError(null);
+    setSuccess(null);
+  }
 
   async function saveFeedback() {
     if (!executionId) {
@@ -43,6 +51,7 @@ export function useFeedbackViewModel(executionId?: number) {
       });
       await submitDailyPain(mapFeedbackToPainLevel(feedbackLevel));
       setSuccess('Feedback salvo com sucesso.');
+      resetFeedbackForm();
       return true;
     } catch {
       setError('Não foi possível salvar o feedback.');
@@ -51,6 +60,10 @@ export function useFeedbackViewModel(executionId?: number) {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    resetFeedbackForm();
+  }, [executionId]);
 
   return {
     observations,
@@ -61,5 +74,6 @@ export function useFeedbackViewModel(executionId?: number) {
     error,
     success,
     saveFeedback,
+    resetFeedbackForm,
   };
 }

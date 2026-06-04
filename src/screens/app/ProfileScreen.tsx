@@ -25,15 +25,17 @@ import styles from "../../styles/profileScreen.style";
 type Tab = "resumo" | "evolucao" | "ajustes";
 
 function WeeklyGoalCard({ weeklyProgress }: { weeklyProgress: number }) {
+    const normalizedWeeklyProgress = Math.min(100, Math.max(0, weeklyProgress));
+
     return (
         <View style={[styles.weeklyGoalCard, { marginTop: 12 }]}>
             <Text style={styles.weeklyTitle}>Meta Semanal</Text>
             <View style={styles.weeklyRow}>
-                <Text style={styles.weeklyPercent}>{weeklyProgress}%</Text>
+                <Text style={styles.weeklyPercent}>{normalizedWeeklyProgress}%</Text>
                 <Text style={styles.weeklyLabel}>Concluído</Text>
             </View>
             <View style={styles.progressTrack}>
-                <View style={[styles.progressFill, { width: `${weeklyProgress}%` as any }]}>
+                <View style={[styles.progressFill, { width: `${normalizedWeeklyProgress}%` as any }]}>
                     <View style={styles.runnerWrapper}>
                         <Text style={styles.runnerEmoji}>🏃🏼‍➡️</Text>
                     </View>
@@ -55,6 +57,9 @@ export function ProfileScreen() {
     const [modalMessage, setModalMessage] = useState("");
     const {
         profileData,
+        weeklyGoalPercent,
+        currentPainNumber,
+        hasPainToday,
         profilePhotoSource,
         coordinatorPhotoSource,
         responsibleStudentPhotoSource,
@@ -63,8 +68,6 @@ export function ProfileScreen() {
         error,
         pickAndUploadProfilePhoto,
     } = useProfileViewModel();
-
-    const weeklyProgress = profileData?.weeklyProgress?.percentCompleted ?? 67;
 
     const handleGoBack = () =>
         navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
@@ -98,7 +101,6 @@ export function ProfileScreen() {
         9: "#E53935",
         10: "#B71C1C",
     };
-
     const barData = [65, 80, 55, 90, 70, 85, 67];
 
     const ResumoTab = () => (
@@ -145,15 +147,15 @@ export function ProfileScreen() {
                             style={[
                                 styles.painCircle,
                                 {
-                                    backgroundColor: n === 3 ? painColors[3] : "#E8E8E8",
-                                    borderColor: n === 3 ? painColors[3] : "transparent",
+                                    backgroundColor: n === currentPainNumber ? painColors[n] : "#E8E8E8",
+                                    borderColor: n === currentPainNumber ? painColors[n] : "transparent",
                                 },
                             ]}
                         >
                             <Text
                                 style={[
                                     styles.painNumber,
-                                    { color: n === 3 ? "#fff" : "#999" },
+                                    { color: n === currentPainNumber ? "#fff" : "#999" },
                                 ]}
                             >
                                 {n}
@@ -165,9 +167,14 @@ export function ProfileScreen() {
                     <Text style={styles.painLabel}>Sem dor</Text>
                     <Text style={styles.painLabel}>Intensa</Text>
                 </View>
+                {!hasPainToday && (
+                    <Text style={[styles.painLabel, { marginTop: 8 }]}>
+                        Dor ainda nÃ£o registrada hoje
+                    </Text>
+                )}
             </View>
 
-            <WeeklyGoalCard weeklyProgress={weeklyProgress} />
+            <WeeklyGoalCard weeklyProgress={weeklyGoalPercent} />
 
             <View style={[styles.card, { marginTop: 12 }]}>
                 <Text style={styles.responsibleLabel}>Fisioterapeuta Responsável</Text>
@@ -247,7 +254,7 @@ export function ProfileScreen() {
                 <Text style={styles.evolutionAuthor}>Dra. Sarah Chen</Text>
             </View>
 
-            <WeeklyGoalCard weeklyProgress={weeklyProgress} />
+            <WeeklyGoalCard weeklyProgress={weeklyGoalPercent} />
 
             <View style={[styles.card, { marginTop: 12 }]}>
                 <Text style={styles.cardTitle}>Áreas de atuação</Text>
