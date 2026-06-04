@@ -14,7 +14,6 @@ const footerItems = [
   { route: 'Home', label: 'Inicio', icon: ICONS.home },
   { route: 'Schedule', label: 'Agenda', icon: ICONS.schedule },
   { route: 'Exercises', label: 'Exercicios', icon: ICONS.exercises },
-  { route: 'Progress', label: 'Progresso', icon: ICONS.progress },
   { route: 'Profile', label: 'Perfil', icon: ICONS.profile },
 ] as const;
 

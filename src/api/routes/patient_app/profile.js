@@ -17,7 +17,11 @@ export async function profileRoute(api, filter) {
  * @return JSON
  **/
 export async function profilePhotoUpdateRoute(api, data) {
-    return api.post(`${ENDPOINTS.patient_app.profile}/photo`, data);
+    return api.post(`${ENDPOINTS.patient_app.profile}/photo`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 }
 
 /**

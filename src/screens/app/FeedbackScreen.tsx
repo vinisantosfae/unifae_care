@@ -71,7 +71,7 @@ export function FeedbackScreen() {
       const saved = await saveFeedback();
 
       if (saved) {
-        navigation.navigate("Home" as never);
+        navigation.navigate("Home" as never, { refreshAt: Date.now() } as never);
       }
     }
 

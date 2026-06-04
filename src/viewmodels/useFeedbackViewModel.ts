@@ -1,5 +1,18 @@
 import { useState } from 'react';
-import { submitExerciseFeedback } from '../services/patient_app';
+import { PainLevel } from '../models/Api';
+import { submitDailyPain, submitExerciseFeedback } from '../services/patient_app';
+
+function mapFeedbackToPainLevel(feedbackLevel: number): PainLevel {
+  if (feedbackLevel === 0) {
+    return 'NONE';
+  }
+
+  if (feedbackLevel <= 2) {
+    return 'MILD';
+  }
+
+  return 'SEVERE';
+}
 
 export function useFeedbackViewModel(executionId?: number) {
   const [observations, setObservations] = useState('');
@@ -28,6 +41,7 @@ export function useFeedbackViewModel(executionId?: number) {
         score: feedbackLevel,
         notes: observations.trim() || undefined,
       });
+      await submitDailyPain(mapFeedbackToPainLevel(feedbackLevel));
       setSuccess('Feedback salvo com sucesso.');
       return true;
     } catch {

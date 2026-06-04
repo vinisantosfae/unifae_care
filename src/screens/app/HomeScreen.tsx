@@ -1,5 +1,5 @@
-import {useNavigation} from "@react-navigation/native";
-import {useState} from "react";
+import {useFocusEffect, useNavigation, useRoute} from "@react-navigation/native";
+import {useCallback, useState} from "react";
 import {useAuthContext} from "../../contexts/AuthContext";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
@@ -27,14 +27,33 @@ import {AppFooter} from "../../components/AppFooter";
 
 export function HomeScreen() {
     const navigation = useNavigation<any>();
+    const route = useRoute<any>();
     const { user, setUser } = useAuthContext() as {
       user: { id?: number; name?: string } | null;
       setUser: (userData: null) => Promise<void>;
     };
-    const { home, loading, error } = useHomeViewModel();
+    const {
+      home,
+      motivation,
+      profileData,
+      coordinatorPhotoSource,
+      responsibleStudentPhotoSource,
+      loading,
+      error,
+      reload,
+    } = useHomeViewModel();
     const progress = home?.plan.percentCompleted ?? 0;
     const nextExercise = home?.nextExercise;
     const showTodayPlan = !!nextExercise && progress < 100;
+    const motivationMessage = motivation?.message ?? home?.motivation?.message;
+    const responsibleStudent = profileData?.responsibleStudent;
+    const coordinator = profileData?.coordinator;
+
+    useFocusEffect(
+      useCallback(() => {
+        reload();
+      }, [route.params?.refreshAt])
+    );
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -185,9 +204,9 @@ export function HomeScreen() {
                       )
                     }
                   </View>
-                  {home?.motivation?.message && (
+                  {motivationMessage && (
                     <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 12}}>
-                      {home.motivation.message}
+                      {motivationMessage}
                     </Text>
                   )}
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 12}}>
@@ -198,20 +217,28 @@ export function HomeScreen() {
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Equipe Responsável</Text>
                   <View style={styles.containerInternal}>
                     <View style={styles.responsiblesInfo}>
-                      <View style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15}}></View>
+                      {responsibleStudentPhotoSource ? (
+                        <Image source={responsibleStudentPhotoSource} style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15, resizeMode: "cover"}}/>
+                      ) : (
+                        <View style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15}}></View>
+                      )}
                       <View>
                         <Text style={{textTransform: "uppercase", color: "#349064BD", fontFamily: FONTS.main_semiBold}}>Fisioterapeuta Responsável</Text>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Dr. Sarah Chen</Text>
-                        <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 5}}>Especialista Ortopédica</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{responsibleStudent?.name ?? "Responsável não informado"}</Text>
+                        <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 5}}>{responsibleStudent?.email ?? "Aluno responsável"}</Text>
                       </View>
                     </View>
                     <View style={{backgroundColor: COLORS.primary, height: 1}}></View>
                     <View style={styles.responsiblesInfo}>
-                      <View style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15}}></View>
+                      {coordinatorPhotoSource ? (
+                        <Image source={coordinatorPhotoSource} style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15, resizeMode: "cover"}}/>
+                      ) : (
+                        <View style={{backgroundColor: COLORS.primary, width: 60, height: 60, borderRadius: 15}}></View>
+                      )}
                       <View>
                         <Text style={{textTransform: "uppercase", color: "#349064BD", fontFamily: FONTS.main_semiBold}}>Coordenador Responsável</Text>
-                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>Dr. Vanessa</Text>
-                        <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 5}}>Especialista Ortopédica</Text>
+                        <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{coordinator?.name ?? "Coordenador não informado"}</Text>
+                        <Text style={{color: "#349064BD", fontFamily: FONTS.main_regular, marginTop: 5}}>{coordinator?.primarySpecialty ?? "Especialidade não informada"}</Text>
                       </View>
                     </View>
                   </View>
