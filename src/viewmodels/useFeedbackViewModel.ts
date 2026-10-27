@@ -14,7 +14,8 @@ function mapFeedbackToPainLevel(feedbackLevel: number): PainLevel {
   return 'SEVERE';
 }
 
-export function useFeedbackViewModel(executionId?: number) {
+// demoAt vem do modo demonstração (utils/demoMode): o envio é simulado, sem chamar a API
+export function useFeedbackViewModel(executionId?: number, demoAt?: number) {
   const [observations, setObservations] = useState('');
   const [feedbackLevel, setFeedbackLevel] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,18 @@ export function useFeedbackViewModel(executionId?: number) {
   }
 
   async function saveFeedback() {
+    if (demoAt) {
+      if (feedbackLevel === null) {
+        setError('Selecione um nível de dor ou esforço.');
+        return false;
+      }
+
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      resetFeedbackForm();
+      return true;
+    }
+
     if (!executionId) {
       setError('Execução não informada.');
       return false;
@@ -63,7 +76,7 @@ export function useFeedbackViewModel(executionId?: number) {
 
   useEffect(() => {
     resetFeedbackForm();
-  }, [executionId]);
+  }, [executionId, demoAt]);
 
   return {
     observations,

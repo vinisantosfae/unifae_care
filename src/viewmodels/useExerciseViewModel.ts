@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { ExerciseDetail } from '../models/Api';
-import { completeExercise, getExerciseDetail } from '../services/patient_app';
+import { ExerciseDetail, ExerciseListResponse } from '../models/Api';
+import { completeExercise, getExerciseDetail, getExercises } from '../services/patient_app';
+
+export type ExerciseWithStatus = ExerciseDetail & { completedToday: boolean };
 
 export function useExerciseViewModel(prescriptionItemId?: number) {
-  const [exercise, setExercise] = useState<ExerciseDetail | null>(null);
+  const [exercise, setExercise] = useState<ExerciseWithStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +21,15 @@ export function useExerciseViewModel(prescriptionItemId?: number) {
     setError(null);
 
     try {
-      setExercise(await getExerciseDetail(prescriptionItemId));
+      // O detalhe não traz o status do dia; ele vem da listagem de exercícios
+      const [detail, list] = await Promise.all([
+        getExerciseDetail(prescriptionItemId),
+        (getExercises() as Promise<ExerciseListResponse>).catch(() => null),
+      ]);
+
+      const listItem = list?.items.find((item) => Number(item.prescriptionItemId) === Number(prescriptionItemId));
+
+      setExercise({ ...detail, completedToday: listItem?.completedToday ?? false });
     } catch {
       setError('Não foi possível carregar o exercício.');
     } finally {
@@ -35,7 +45,9 @@ export function useExerciseViewModel(prescriptionItemId?: number) {
     setSubmitting(true);
     setError(null);
     try {
-      return await completeExercise(prescriptionItemId);
+      const completion = await completeExercise(prescriptionItemId);
+      setExercise((current) => (current ? { ...current, completedToday: true } : current));
+      return completion;
     } catch {
       setError('Não foi possível concluir o exercício.');
       throw new Error('Não foi possível concluir o exercício.');
@@ -48,5 +60,5 @@ export function useExerciseViewModel(prescriptionItemId?: number) {
     loadExercise();
   }, [prescriptionItemId]);
 
-  return { exercise, loading, submitting, error, reload: loadExercise, concludeExercise };
+  return { exercise, completedToday: exercise?.completedToday ?? false, loading, submitting, error, reload: loadExercise, concludeExercise };
 }

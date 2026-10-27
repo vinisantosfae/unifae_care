@@ -1,10 +1,10 @@
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {COLORS} from "../../themes/colors";
 import {FONTS} from "../../themes/fonts";
 import {ICONS} from "../../themes/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {
   View,
@@ -16,18 +16,36 @@ import {
   Keyboard,
   Image,
   ImageBackground,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking
 } from "react-native";
+
+const VIDEO_HEIGHT = 180;
+const VIDEO_LOAD_TIMEOUT_MS = 15000;
+
+type VideoStatus = 'loading' | 'ready' | 'error';
 import styles from "../../styles/exerciseScreen.style";
 import {useExerciseViewModel} from "../../viewmodels/useExerciseViewModel";
+import {DemoCompletion, cycleDemoCompletion, getDemoCompletion, setDemoCompletion} from "../../utils/demoMode";
+
+const DEMO_LABELS: Record<DemoCompletion, string> = {
+  completed: "Demo: concluído",
+  pending: "Demo: pendente",
+};
 
 export function ExerciseScreen() {
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
-    const [progress, setProgress] = useState(0)
-    const { exercise, loading, error, submitting, concludeExercise } = useExerciseViewModel(route.params?.prescriptionItemId);
+    const { exercise, loading, error, submitting } =useExerciseViewModel(route.params?.prescriptionItemId);
     const handleGoBack = () => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
+    // God mode: segurar o título "Unifae CARE" alterna pendente <-> concluído
+    const [demoCompletion, setDemoCompletionState] = useState<DemoCompletion>(getDemoCompletion());
+    const isCompleted = demoCompletion === 'completed';
+    const progress = isCompleted ? 100 : 0;
+    const handleToggleDemo = () => setDemoCompletionState(cycleDemoCompletion());
+
+    console.log(exercise)
     const ProgressCircle = () => {
       const size = 100;
       const strokeWidth = 11;
@@ -82,23 +100,68 @@ export function ExerciseScreen() {
       );
     };
 
-    async function handleConcludeExercise() {
-      try {
-        const completion = await concludeExercise();
-        navigation.navigate("Feedback" as never, { executionId: completion.executionId } as never);
-      } catch {
-        // A tela continua no detalhe; o usuário pode tentar novamente.
-      }
+    // Modo demo: a conclusão é simulada localmente, sem chamar a API, e segue para o feedback
+    function handleConcludeExercise() {
+      setDemoCompletion('completed');
+      setDemoCompletionState('completed');
+      navigation.navigate("Feedback" as never, { demoAt: Date.now() } as never);
     }
 
     const getYoutubeId = () => {
       const regex =
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
 
-      const match = exercise?.videoUrl.match(regex)
+      const match = exercise?.videoUrl?.match(regex)
 
       return match ? match[1] : null
     }
+
+    const videoId = getYoutubeId();
+    const [videoStatus, setVideoStatus] = useState<VideoStatus>('loading');
+
+    // Se o player não ficar pronto a tempo (sem internet, vídeo removido...), mantém a capa como fallback
+    useEffect(() => {
+      if (!videoId || videoStatus !== 'loading') return;
+
+      const timeout = setTimeout(() => setVideoStatus('error'), VIDEO_LOAD_TIMEOUT_MS);
+      return () => clearTimeout(timeout);
+    }, [videoId, videoStatus]);
+
+    const VideoCover = () => {
+      const failed = !videoId || videoStatus === 'error';
+      const canOpenExternally = failed && !!exercise?.videoUrl;
+      const title = !videoId
+        ? "Vídeo indisponível"
+        : failed
+          ? "Não foi possível carregar o vídeo"
+          : "Carregando vídeo...";
+
+      return (
+        <TouchableOpacity
+          activeOpacity={0.85}
+          disabled={!canOpenExternally}
+          onPress={() => exercise?.videoUrl && Linking.openURL(exercise.videoUrl)}
+          style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 12, overflow: "hidden", backgroundColor: COLORS.primary}}
+        >
+          <ImageBackground
+            source={videoId ? { uri: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` } : undefined}
+            style={{flex: 1}}
+            resizeMode="cover"
+          >
+            <View style={{flex: 1, backgroundColor: "rgba(0, 0, 0, 0.45)", justifyContent: "center", alignItems: "center", padding: 16}}>
+              <Svg width={56} height={56} viewBox="0 0 56 56">
+                <Circle cx={28} cy={28} r={28} fill="rgba(255, 255, 255, 0.9)" />
+                <Path d="M23 18 L39 28 L23 38 Z" fill={COLORS.primary} />
+              </Svg>
+              <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_semiBold, fontSize: 15, marginTop: 12, textAlign: "center"}}>{title}</Text>
+              {canOpenExternally && (
+                <Text style={{color: COLORS.text.light, fontFamily: FONTS.main_regular, fontSize: 13, marginTop: 4, textAlign: "center"}}>Toque para abrir no YouTube</Text>
+              )}
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
+      );
+    };
 
     if (loading) {
       return <SafeAreaView edges={['top']} style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Text>Carregando exercício...</Text></SafeAreaView>;
@@ -127,8 +190,9 @@ export function ExerciseScreen() {
                         <Image source={ICONS.light_back} style={{aspectRatio: 1, resizeMode: "contain", width: 27, height: 27}}/>
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_semiBold}}>Voltar</Text>
                       </TouchableOpacity>
-                      <Text style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
+                      <Text onLongPress={handleToggleDemo}style={{fontSize: 22, color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>Unifae CARE</Text>
                     </View>
+                    <Text style={{alignSelf: "flex-end", color: COLORS.text.light, fontFamily: FONTS.main_regular, fontSize: 11, opacity: 0.7, marginTop: 4}}>{DEMO_LABELS[demoCompletion]}</Text>
                   </View>
                   <View style={{marginHorizontal: 20, alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between", paddingTop: 20}}>
                     <View style={{width: "60%"}}>
@@ -143,11 +207,18 @@ export function ExerciseScreen() {
                     <Image source={require('../../assets/images/exercise_image.png')} style={{aspectRatio: 1, resizeMode: "contain", height: 250, marginTop: 20}}/>
                   </View>
                   <View style={[styles.container, {marginHorizontal: 20}]}>
-                    <YoutubePlayer
-                      height={180}
-                      play={true}
-                      videoId={getYoutubeId()}
-                    />
+                    <View style={{height: VIDEO_HEIGHT}}>
+                      {videoId && videoStatus !== 'error' && (
+                        <YoutubePlayer
+                          height={VIDEO_HEIGHT}
+                          play={true}
+                          videoId={videoId}
+                          onReady={() => setVideoStatus('ready')}
+                          onError={() => setVideoStatus('error')}
+                        />
+                      )}
+                      {videoStatus !== 'ready' && <VideoCover />}
+                    </View>
                   </View>
                 </ImageBackground>
               </View>
@@ -193,7 +264,7 @@ export function ExerciseScreen() {
                       </View>
                     ) : (
                       <View style={{alignItems: "center", flex: 1, justifyContent: "center"}}>
-                        <Text style={{color: COLORS.text.primary, textAlign: "center", fontFamily: FONTS.main_semiBold, fontSize: 15}}>Parabens pelo resultado da semana!</Text>
+                        <Text style={{color: COLORS.text.primary, textAlign: "center", fontFamily: FONTS.main_semiBold, fontSize: 15}}>Parabéns pelo resultado da semana!</Text>
                       </View>
                     )
                   }
@@ -241,9 +312,19 @@ export function ExerciseScreen() {
                     </View>
                   </View>
                   <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.concludeButton} onPress={handleConcludeExercise} disabled={submitting}>
-                      <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.primary}}>{submitting ? "Concluindo..." : "Concluir atividade"}</Text>
-                    </TouchableOpacity>
+                    {isCompleted ? (
+                      <View style={[styles.concludeButton, {flexDirection: "row", justifyContent: "center", gap: 10, backgroundColor: COLORS.primary}]}>
+                        <Svg width={22} height={22} viewBox="0 0 24 24">
+                          <Circle cx={12} cy={12} r={12} fill={COLORS.light} />
+                          <Path d="M7 12.5 L10.5 16 L17 9" stroke={COLORS.primary} strokeWidth={2.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                        </Svg>
+                        <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.light}}>Concluído hoje</Text>
+                      </View>
+                    ) : (
+                      <TouchableOpacity style={styles.concludeButton} onPress={handleConcludeExercise} disabled={submitting}>
+                        <Text style={{fontFamily: FONTS.main_semiBold, textTransform: "uppercase", fontSize: 18, color: COLORS.text.primary}}>{submitting ? "Concluindo..." : "Concluir atividade"}</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </ImageBackground>
               </View>

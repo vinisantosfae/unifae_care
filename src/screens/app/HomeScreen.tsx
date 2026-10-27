@@ -25,6 +25,12 @@ import styles from "../../styles/homeScreen.style";
 import {useHomeViewModel} from "../../viewmodels/useHomeViewModel";
 import {AppFooter} from "../../components/AppFooter";
 
+const PAIN_LEVEL_LABELS: Record<string, string> = {
+  NONE: "Nenhuma",
+  MILD: "Leve",
+  SEVERE: "Severa",
+};
+
 export function HomeScreen() {
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
@@ -199,7 +205,7 @@ export function HomeScreen() {
                         </View>
                       ) : (
                         <View style={{alignItems: "center", flex: 1, justifyContent: "center"}}>
-                          <Text style={{color: COLORS.text.primary, textAlign: "center", fontFamily: FONTS.main_semiBold, fontSize: 15}}>Parabens pelo resultado da semana!</Text>
+                          <Text style={{color: COLORS.text.primary, textAlign: "center", fontFamily: FONTS.main_semiBold, fontSize: 15}}>Parabéns pelo resultado da semana!</Text>
                         </View>
                       )
                     }
@@ -210,7 +216,7 @@ export function HomeScreen() {
                     </Text>
                   )}
                   <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 12}}>
-                    Dor hoje: {home?.painToday.recorded ? home.painToday.level ?? "Registrada" : "Ainda não registrada"}
+                    Dor hoje: {home?.painToday.recorded ? (home.painToday.level ? PAIN_LEVEL_LABELS[home.painToday.level] ?? home.painToday.level : "Registrada") : "Ainda não registrada"}
                   </Text>
                 </View>
                 <View style={styles.container}>

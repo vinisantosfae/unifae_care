@@ -31,7 +31,7 @@ export function FeedbackScreen() {
       error,
       success,
       saveFeedback,
-    } = useFeedbackViewModel(route.params?.executionId);
+    } = useFeedbackViewModel(route.params?.executionId, route.params?.demoAt);
     const handleGoBack = () => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Home");
 
     const feedbackLevels = [

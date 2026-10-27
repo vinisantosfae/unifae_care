@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#E8F5EE",
-        borderRadius: 8,
+        borderRadius: 16,
     },
     monthNavArrow: {
         fontSize: 22,
@@ -136,7 +136,9 @@ const styles = StyleSheet.create({
     dayInner: {
         width: 34,
         height: 34,
-        borderRadius: 17,
+        aspectRatio: 1,
+        borderRadius: 999,
+        overflow: "hidden",
         alignItems: "center",
         justifyContent: "center",
     },
