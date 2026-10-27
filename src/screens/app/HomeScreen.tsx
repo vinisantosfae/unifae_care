@@ -159,7 +159,7 @@ export function HomeScreen() {
                       </View>
                       <View style={[styles.containerInternal, {justifyContent: "space-between", alignItems: "center", flexDirection: "row"}]}>
                         <View>
-                          <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{nextExercise!.exerciseName}</Text>
+                          <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16}}>{nextExercise!.exerciseName.replace("Teste app - ", "")}</Text>
                           <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 7}}>{nextExercise!.axis}</Text>
                           <Text style={{color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 2}}>{nextExercise!.problem}</Text>
                           <View style={{alignItems: 'center', flexDirection: "row", marginTop: 15, gap: 5}}>

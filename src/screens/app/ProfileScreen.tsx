@@ -169,7 +169,7 @@ export function ProfileScreen() {
                 </View>
                 {!hasPainToday && (
                     <Text style={[styles.painLabel, { marginTop: 8 }]}>
-                        Dor ainda nÃ£o registrada hoje
+                        Dor ainda não registrada hoje
                     </Text>
                 )}
             </View>
@@ -244,12 +244,11 @@ export function ProfileScreen() {
             <View style={[styles.card, { marginTop: 12 }]}>
                 <Text style={styles.cardTitle}>Registros de evolução</Text>
                 <View style={styles.divider} />
-                <Text style={styles.evolutionDate}>22/04/2006 12:00</Text>
+                <Text style={styles.evolutionDate}>22/10/2026 12:06</Text>
                 <Text style={styles.evolutionText}>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting
-                    industry. Lorem Ipsum has been the industry's standard dummy text ever
-                    since the 1500s, when an unknown printer took a galley of type and
-                    scrambled it to make a type specimen book.
+                    Estou muito contente com seu desempenho e foco.
+                    Continue assim e verá bons resultados na sua recuperação.
+                    Tente realizar todos os exercícios previstos no seu cronograma.
                 </Text>
                 <Text style={styles.evolutionAuthor}>Dra. Sarah Chen</Text>
             </View>

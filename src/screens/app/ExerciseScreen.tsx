@@ -132,7 +132,7 @@ export function ExerciseScreen() {
                   </View>
                   <View style={{marginHorizontal: 20, alignItems: "flex-end", flexDirection: "row", justifyContent: "space-between", paddingTop: 20}}>
                     <View style={{width: "60%"}}>
-                      <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>{exercise.title}</Text>
+                      <Text style={{fontSize: 22, color: COLORS.text.light, fontFamily: FONTS.main_bold, textTransform: "uppercase"}}>{exercise.title.replace("Teste app - ", "")}</Text>
                       <View style={[styles.taxonomy, {marginTop: 20}]}>
                         <Text style={{color: COLORS.text.light, textTransform: "uppercase", fontFamily: FONTS.main_bold}}>{exercise.taxonomy.axis}</Text>
                       </View>

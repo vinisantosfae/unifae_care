@@ -263,7 +263,7 @@ export function ScheduleScreen() {
                                                             styles.exerciseName,
                                                             completed && styles.exerciseNameDone,
                                                         ]}>
-                                                            {exercise.title}
+                                                            {exercise.title.replace("Teste app - ", "")}
                                                         </Text>
                                                         <Text style={styles.exerciseMeta}>
                                                             {exercise.metrics.repetitionsRaw ?? exercise.metrics.volume ?? "Sem métricas"} · {getExerciseStatus(exercise)}

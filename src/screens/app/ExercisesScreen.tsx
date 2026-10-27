@@ -30,7 +30,7 @@ export function ExercisesScreen() {
               onPress={() => navigation.navigate('Exercise' as never, { prescriptionItemId: exercise.prescriptionItemId } as never)}
               style={{ borderWidth: 1, borderColor: COLORS.primary, borderRadius: 15, padding: 16, backgroundColor: '#D7EADE36' }}
             >
-              <Text style={{ color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16 }}>{exercise.title}</Text>
+              <Text style={{ color: COLORS.text.primary, fontFamily: FONTS.main_semiBold, fontSize: 16 }}>{exercise.title.replace("Teste app - ", "")}</Text>
               <Text style={{ color: COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 6 }}>{exercise.taxonomy.axis} · {exercise.taxonomy.objective}</Text>
               <Text style={{ color: exercise.completedToday ? COLORS.primary : COLORS.text.primary, fontFamily: FONTS.main_regular, marginTop: 8 }}>
                 {exercise.completedToday ? 'Concluído hoje' : 'Pendente hoje'}
